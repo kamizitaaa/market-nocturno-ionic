@@ -1,0 +1,7 @@
+{
+  "name": "mercado-nocturno",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
