@@ -1,38 +1,63 @@
-<ion-header>
 <app-header></app-header>
-</ion-header>
 
 <ion-content [fullscreen]="true">
+  <div class="registro-container">
+    <div class="registro-box">
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-logo">
-        <img src="assets/LogoMercadoNoctuno.png" alt="Market Nocturno">
+      <h2>CREA TU CUENTA</h2>
+      <p class="subtitle">Regístrate para hacer pedidos</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre/s *</label>
+          <input type="text" [(ngModel)]="nombre" placeholder="Tu nombre" class="custom-input">
+        </div>
+        <div class="form-group">
+          <label>Teléfono *</label>
+          <input type="tel" [(ngModel)]="telefono" placeholder="449 000 0000" class="custom-input">
+        </div>
       </div>
-      <h1>
-        <span class="sparkle">✨</span>
-        TE ESPERAMOS TODOS LOS<br>
-        VIERNES Y SÁBADOS EN:<br>
-        BOSQUE URBANO DE 6PM A 10:30PM
-        <span class="sparkle">✨</span>
-      </h1>
-    </div>
 
-    <!-- Carousel -->
-    <div class="carousel-container">
-      <button class="carousel-btn prev-btn" (click)="prevSlide()">‹</button>
-      <div class="carousel-track-container">
-        <div class="carousel-track" [ngStyle]="getTrackStyle()">
-          <div class="carousel-slide" *ngFor="let img of carouselImages">
-            <img [src]="'assets/' + img" [alt]="img">
+      <div class="form-group">
+        <label>Apellido paterno *</label>
+        <input type="text" [(ngModel)]="apellidoPaterno" placeholder="Apellido paterno" class="custom-input">
+      </div>
+
+      <div class="form-group">
+        <label>Apellido materno *</label>
+        <input type="text" [(ngModel)]="apellidoMaterno" placeholder="Apellido materno" class="custom-input">
+      </div>
+
+      <div class="form-group">
+        <label>Correo electrónico *</label>
+        <input type="email" [(ngModel)]="email" placeholder="tu@gmail.com" class="custom-input">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contraseña *</label>
+          <div class="input-password">
+            <input [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="••••••••" class="custom-input">
+            <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'" (click)="togglePassword()"></ion-icon>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Confirmar contraseña *</label>
+          <div class="input-password">
+            <input [type]="mostrarConfirm ? 'text' : 'password'" [(ngModel)]="confirmarPassword" placeholder="••••••••" class="custom-input">
+            <ion-icon [name]="mostrarConfirm ? 'eye-off-outline' : 'eye-outline'" (click)="toggleConfirm()"></ion-icon>
           </div>
         </div>
       </div>
-      <button class="carousel-btn next-btn" (click)="nextSlide()">›</button>
+
+      <button class="btn-registro" (click)="registrar()">→ Crear cuenta</button>
+
+      <p class="login-link">
+        ¿Ya tienes una cuenta? <a routerLink="/login">Inicia Sesión</a>
+      </p>
+
     </div>
-  </section>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -47,7 +72,6 @@
           <p>AGUASCALIENTES, AGS.</p>
         </div>
       </div>
-
       <div class="footer-section">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -57,12 +81,10 @@
           <p><strong>MARKETNOCTURNOAGS&#64;GMAIL.COM</strong></p>
         </div>
       </div>
-
       <div class="copyright">
         <p><strong>© TODOS LOS DERECHOS RESERVADOS</strong></p>
         <p class="trademark">LAS MARCAS USADAS EN ESTA PÁGINA SON PROPIEDAD DE SUS TITULARES.</p>
       </div>
-
       <div class="footer-section">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
@@ -71,7 +93,6 @@
           <p><strong>449 898 8849</strong></p>
         </div>
       </div>
-
       <div class="social-media">
         <p>NUESTRAS REDES SOCIALES</p>
         <div class="social-icons">

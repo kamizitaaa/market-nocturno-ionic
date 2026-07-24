@@ -1,38 +1,60 @@
-<ion-header>
 <app-header></app-header>
-</ion-header>
 
 <ion-content [fullscreen]="true">
+  <div class="login-container">
+    <div class="login-box">
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-logo">
-        <img src="assets/LogoMercadoNoctuno.png" alt="Market Nocturno">
-      </div>
-      <h1>
-        <span class="sparkle">✨</span>
-        TE ESPERAMOS TODOS LOS<br>
-        VIERNES Y SÁBADOS EN:<br>
-        BOSQUE URBANO DE 6PM A 10:30PM
-        <span class="sparkle">✨</span>
-      </h1>
-    </div>
+      <h2>BIENVENIDO DE NUEVO</h2>
+      <p class="subtitle">Ingresa tus credenciales para continuar</p>
 
-    <!-- Carousel -->
-    <div class="carousel-container">
-      <button class="carousel-btn prev-btn" (click)="prevSlide()">‹</button>
-      <div class="carousel-track-container">
-        <div class="carousel-track" [ngStyle]="getTrackStyle()">
-          <div class="carousel-slide" *ngFor="let img of carouselImages">
-            <img [src]="'assets/' + img" [alt]="img">
-          </div>
+      <div class="form-group">
+        <div class="input-icon">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input type="email" [(ngModel)]="email" placeholder="correo@ejemplo.com" class="custom-input">
         </div>
       </div>
-      <button class="carousel-btn next-btn" (click)="nextSlide()">›</button>
+
+      <div class="form-group">
+        <div class="input-icon">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <input [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="••••••••" class="custom-input">
+          <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'" (click)="togglePassword()" class="eye-icon"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Captcha -->
+      <div class="form-group captcha-group">
+        <div class="captcha-box" (click)="toggleCaptcha()">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <span>Verificación humana *</span>
+          <ion-icon [name]="mostrarCaptcha ? 'chevron-up-outline' : 'chevron-down-outline'" class="ml-auto"></ion-icon>
+        </div>
+        <div class="captcha-math" *ngIf="mostrarCaptcha">
+          <span class="num-circle">{{ captchaNum1 }}</span>
+          <span class="operador">x</span>
+          <span class="num-circle">{{ captchaNum2 }}</span>
+          <span class="operador">=</span>
+          <input type="number" [(ngModel)]="captchaRespuesta" placeholder="Tu respuesta" class="captcha-input">
+          <ion-icon name="refresh-outline" (click)="generarCaptcha()" class="refresh-icon"></ion-icon>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="remember">
+          <input type="checkbox" [(ngModel)]="recuerdame">
+          Recuérdame
+        </label>
+        <a class="forgot">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <button class="btn-login" (click)="login()">→ Iniciar Sesión</button>
+
+      <p class="register-link">
+        ¿No tienes una cuenta? <a routerLink="/registro">¡Regístrate!</a>
+      </p>
+
     </div>
-  </section>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -47,7 +69,6 @@
           <p>AGUASCALIENTES, AGS.</p>
         </div>
       </div>
-
       <div class="footer-section">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -57,12 +78,10 @@
           <p><strong>MARKETNOCTURNOAGS&#64;GMAIL.COM</strong></p>
         </div>
       </div>
-
       <div class="copyright">
         <p><strong>© TODOS LOS DERECHOS RESERVADOS</strong></p>
         <p class="trademark">LAS MARCAS USADAS EN ESTA PÁGINA SON PROPIEDAD DE SUS TITULARES.</p>
       </div>
-
       <div class="footer-section">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
@@ -71,7 +90,6 @@
           <p><strong>449 898 8849</strong></p>
         </div>
       </div>
-
       <div class="social-media">
         <p>NUESTRAS REDES SOCIALES</p>
         <div class="social-icons">

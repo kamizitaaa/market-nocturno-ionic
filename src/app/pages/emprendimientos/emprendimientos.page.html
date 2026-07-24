@@ -1,38 +1,111 @@
-<ion-header>
 <app-header></app-header>
-</ion-header>
 
 <ion-content [fullscreen]="true">
+  <div class="emprendimientos-container">
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-logo">
-        <img src="assets/LogoMercadoNoctuno.png" alt="Market Nocturno">
+    <!-- Sidebar filtros -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <ion-icon name="menu-outline"></ion-icon>
+        <span>Filtros</span>
       </div>
-      <h1>
-        <span class="sparkle">✨</span>
-        TE ESPERAMOS TODOS LOS<br>
-        VIERNES Y SÁBADOS EN:<br>
-        BOSQUE URBANO DE 6PM A 10:30PM
-        <span class="sparkle">✨</span>
-      </h1>
-    </div>
 
-    <!-- Carousel -->
-    <div class="carousel-container">
-      <button class="carousel-btn prev-btn" (click)="prevSlide()">‹</button>
-      <div class="carousel-track-container">
-        <div class="carousel-track" [ngStyle]="getTrackStyle()">
-          <div class="carousel-slide" *ngFor="let img of carouselImages">
-            <img [src]="'assets/' + img" [alt]="img">
-          </div>
+      <!-- Categoría -->
+      <div class="filtro-section">
+        <div class="filtro-title" (click)="toggleFiltro('categoria')">
+          <span>Categoría</span>
+          <ion-icon [name]="filtros.categoria ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+        </div>
+        <div class="filtro-options" *ngIf="filtros.categoria">
+          <label *ngFor="let cat of categorias" class="filtro-option">
+            <input type="checkbox" [(ngModel)]="cat.seleccionada" (change)="aplicarFiltros()">
+            {{ cat.nombre }}
+          </label>
         </div>
       </div>
-      <button class="carousel-btn next-btn" (click)="nextSlide()">›</button>
+
+      <!-- Estado -->
+      <div class="filtro-section">
+        <div class="filtro-title" (click)="toggleFiltro('estado')">
+          <span>Estado</span>
+          <ion-icon [name]="filtros.estado ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+        </div>
+        <div class="filtro-options" *ngIf="filtros.estado">
+          <label class="filtro-option">
+            <input type="checkbox" [(ngModel)]="filtroActivo" (change)="aplicarFiltros()">
+            Activo
+          </label>
+          <label class="filtro-option">
+            <input type="checkbox" [(ngModel)]="filtroDestacado" (change)="aplicarFiltros()">
+            Destacado
+          </label>
+        </div>
+      </div>
+
+      <!-- Rango de precio -->
+      <div class="filtro-section">
+        <div class="filtro-title" (click)="toggleFiltro('precio')">
+          <span>Rango de precio</span>
+          <ion-icon [name]="filtros.precio ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+        </div>
+        <div class="filtro-options" *ngIf="filtros.precio">
+          <select [(ngModel)]="filtroPrecio" (change)="aplicarFiltros()" class="precio-select">
+            <option value="">Todos</option>
+            <option value="economico">$ Económico &lt; 100</option>
+            <option value="medio">$$ Medio 100-500</option>
+            <option value="alto">$$$ Alto &gt; 500</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar filtros</button>
     </div>
-  </section>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+      <div class="main-header">
+        <h1>✨ NUESTROS EMPRENDIMIENTOS ✨</h1>
+        <p>Descubre los mejores emprendimientos locales de Aguascalientes</p>
+      </div>
+
+      <!-- Búsqueda -->
+      <div class="busqueda-container">
+        <div class="busqueda-input">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" [(ngModel)]="textoBusqueda" placeholder="Busca por nombre, categoría o descripción" class="busqueda-field">
+        </div>
+        <button class="btn-buscar" (click)="aplicarFiltros()">
+          <ion-icon name="search-outline"></ion-icon>
+          Buscar
+        </button>
+        <div class="vista-btns">
+          <button [class.active]="vistaGrid" (click)="vistaGrid = true">
+            <ion-icon name="grid-outline"></ion-icon>
+          </button>
+          <button [class.active]="!vistaGrid" (click)="vistaGrid = false">
+            <ion-icon name="list-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid de emprendimientos -->
+      <div [class]="vistaGrid ? 'emp-grid' : 'emp-list'">
+        <div class="emp-card" *ngFor="let emp of emprendimientosFiltrados">
+          <img [src]="emp.imagen || 'assets/default.png'" [alt]="emp.nombre">
+          <div class="emp-info">
+            <h3>{{ emp.nombre }}</h3>
+            <p class="categoria">{{ emp.categoria }}</p>
+            <p class="descripcion">{{ emp.descripcion }}</p>
+          </div>
+        </div>
+
+        <div class="no-resultados" *ngIf="emprendimientosFiltrados.length === 0">
+          <ion-icon name="search-outline"></ion-icon>
+          <p>No se encontraron emprendimientos</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -47,7 +120,6 @@
           <p>AGUASCALIENTES, AGS.</p>
         </div>
       </div>
-
       <div class="footer-section">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -57,12 +129,10 @@
           <p><strong>MARKETNOCTURNOAGS&#64;GMAIL.COM</strong></p>
         </div>
       </div>
-
       <div class="copyright">
         <p><strong>© TODOS LOS DERECHOS RESERVADOS</strong></p>
         <p class="trademark">LAS MARCAS USADAS EN ESTA PÁGINA SON PROPIEDAD DE SUS TITULARES.</p>
       </div>
-
       <div class="footer-section">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
@@ -71,7 +141,6 @@
           <p><strong>449 898 8849</strong></p>
         </div>
       </div>
-
       <div class="social-media">
         <p>NUESTRAS REDES SOCIALES</p>
         <div class="social-icons">

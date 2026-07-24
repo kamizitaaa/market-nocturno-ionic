@@ -1,0 +1,60 @@
+ion-header ion-toolbar {
+  --background: #000;
+  --color: #fff;
+  --min-height: 100px;
+  border-top: 8px solid #ffa500;
+  border-bottom: 8px solid #ff1493;
+  padding: 0 20px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 45px;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 25px;
+  cursor: pointer;
+
+  &.active {
+    color: #ffa500;
+  }
+
+  &:hover {
+    color: #ffa500;
+  }
+}
+
+.login-btn {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  border: 2px solid #fff;
+  border-radius: 25px;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+
+  &:hover {
+    color: #ffa500;
+    border-color: #ffa500;
+  }
+
+  ion-icon {
+    font-size: 18px;
+  }
+}
+
+ion-button {
+  --color: #fff;
+  font-weight: bold;
+}

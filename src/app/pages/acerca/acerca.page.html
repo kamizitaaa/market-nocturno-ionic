@@ -1,36 +1,78 @@
-<ion-header>
 <app-header></app-header>
-</ion-header>
 
 <ion-content [fullscreen]="true">
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-      <div class="hero-logo">
-        <img src="assets/LogoMercadoNoctuno.png" alt="Market Nocturno">
-      </div>
-      <h1>
-        <span class="sparkle">✨</span>
-        TE ESPERAMOS TODOS LOS<br>
-        VIERNES Y SÁBADOS EN:<br>
-        BOSQUE URBANO DE 6PM A 10:30PM
-        <span class="sparkle">✨</span>
-      </h1>
+      <h1><span class="sparkle">✨</span> ACERCA DE NOSOTROS <span class="sparkle">✨</span></h1>
+      <p>Conoce la historia detrás del Market Nocturno de Aguascalientes</p>
     </div>
+  </section>
 
-    <!-- Carousel -->
-    <div class="carousel-container">
-      <button class="carousel-btn prev-btn" (click)="prevSlide()">‹</button>
-      <div class="carousel-track-container">
-        <div class="carousel-track" [ngStyle]="getTrackStyle()">
-          <div class="carousel-slide" *ngFor="let img of carouselImages">
-            <img [src]="'assets/' + img" [alt]="img">
-          </div>
+  <!-- Nuestra Historia -->
+  <section class="section historia">
+    <div class="section-content">
+      <h2>📖 Nuestra Historia</h2>
+      <div class="historia-grid">
+        <div class="historia-texto">
+          <p>El Market Nocturno de Aguascalientes nació en 2022 con una simple pero poderosa idea: crear un espacio donde los emprendedores locales pudieran mostrar sus productos y talentos en un ambiente nocturno, mágico y lleno de vida.</p>
+          <p>Desde nuestros humildes inicios con apenas 10 emprendedores, hemos crecido hasta convertirnos en el mercado nocturno más querido de Aguascalientes, reuniendo cada viernes y sábado a cientos de visitantes en el Bosque Urbano.</p>
+          <p>Cada edición es una celebración de la creatividad, el emprendimiento y la comunidad. Somos más que un mercado — somos una familia.</p>
+        </div>
+        <div class="historia-imagen">
+          <img src="assets/elmejor.png" alt="Historia del Market Nocturno">
         </div>
       </div>
-      <button class="carousel-btn next-btn" (click)="nextSlide()">›</button>
+    </div>
+  </section>
+
+  <!-- Misión y Visión -->
+  <section class="section mision-vision">
+    <div class="section-content">
+      <h2>🎯 Misión y Visión</h2>
+      <div class="mv-grid">
+        <div class="mv-card mision">
+          <div class="mv-icon">🎪</div>
+          <h3>MISIÓN</h3>
+          <p>Impulsar el emprendimiento local creando un espacio inclusivo, seguro y vibrante donde artesanos, cocineros, diseñadores y creadores puedan conectar con su comunidad, generar ingresos y hacer crecer sus sueños cada semana.</p>
+        </div>
+        <div class="mv-card vision">
+          <div class="mv-icon">🌟</div>
+          <h3>VISIÓN</h3>
+          <p>Ser el mercado nocturno de referencia en el centro de México, reconocido por transformar vidas a través del comercio justo, la cultura local y la experiencia única que solo el Market Nocturno de Aguascalientes puede ofrecer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nuestro Equipo -->
+  <section class="section equipo">
+    <div class="section-content">
+      <h2>👥 Nuestro Equipo</h2>
+      <div class="equipo-grid">
+        <div class="equipo-card" *ngFor="let miembro of equipo">
+          <div class="equipo-avatar">
+            <img [src]="miembro.foto" [alt]="miembro.nombre">
+          </div>
+          <h3>{{ miembro.nombre }}</h3>
+          <p class="puesto">{{ miembro.puesto }}</p>
+          <p class="descripcion">{{ miembro.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galería -->
+  <section class="section galeria">
+    <div class="section-content">
+      <h2>📸 Galería</h2>
+      <div class="galeria-grid">
+        <div class="galeria-item" *ngFor="let img of galeria">
+          <img [src]="'assets/' + img" [alt]="img">
+        </div>
+      </div>
     </div>
   </section>
 
@@ -47,7 +89,6 @@
           <p>AGUASCALIENTES, AGS.</p>
         </div>
       </div>
-
       <div class="footer-section">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -57,12 +98,10 @@
           <p><strong>MARKETNOCTURNOAGS&#64;GMAIL.COM</strong></p>
         </div>
       </div>
-
       <div class="copyright">
         <p><strong>© TODOS LOS DERECHOS RESERVADOS</strong></p>
         <p class="trademark">LAS MARCAS USADAS EN ESTA PÁGINA SON PROPIEDAD DE SUS TITULARES.</p>
       </div>
-
       <div class="footer-section">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
@@ -71,7 +110,6 @@
           <p><strong>449 898 8849</strong></p>
         </div>
       </div>
-
       <div class="social-media">
         <p>NUESTRAS REDES SOCIALES</p>
         <div class="social-icons">
