@@ -1,13 +1,125 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>convocatorias</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-admin-header></app-admin-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">convocatorias</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="admin-container">
+
+    <!-- Header -->
+    <div class="admin-header">
+      <h1>✨ CONVOCATORIAS ✨</h1>
+      <p>Crea, edita y controla qué convocatorias se muestran en la página pública</p>
+    </div>
+
+    <div class="acciones-top">
+      <button class="btn-nuevo" (click)="abrirModalNueva()">+ Nueva Convocatoria</button>
+
+      <div class="busqueda-input">
+        <ion-icon name="search-outline"></ion-icon>
+        <input type="text" [(ngModel)]="textoBusqueda" placeholder="Busca por título o descripción" class="busqueda-field">
+      </div>
+
+      <button class="btn-recargar" (click)="recargar()">
+        <ion-icon name="refresh-outline"></ion-icon>
+        Recargar
+      </button>
+    </div>
+
+    <!-- Grid de convocatorias -->
+    <div class="convocatorias-grid">
+      <div class="convocatoria-card" *ngFor="let conv of convocatoriasFiltradas">
+        <div class="conv-imagen">
+          <img [src]="conv.imagen" [alt]="conv.titulo">
+          <span class="badge-estado" [class.activa]="conv.activa" [class.inactiva]="!conv.activa">
+            {{ conv.activa ? 'Activa' : 'Inactiva' }}
+          </span>
+        </div>
+
+        <div class="conv-body">
+          <h3>{{ conv.titulo }}</h3>
+          <p class="conv-fechas">📅 {{ conv.fechaInicio }} — {{ conv.fechaFin }}</p>
+          <p class="conv-desc">{{ conv.descripcion }}</p>
+        </div>
+
+        <div class="conv-footer">
+          <label class="switch-label">
+            <input type="checkbox" [checked]="conv.activa" (change)="toggleActiva(conv)">
+            <span class="switch-texto">{{ conv.activa ? 'Visible en el sitio' : 'Oculta' }}</span>
+          </label>
+
+          <div class="conv-acciones">
+            <button class="btn-editar" (click)="abrirModalEditar(conv)">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
+            <button class="btn-eliminar" (click)="eliminarConvocatoria(conv)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sin-datos-full" *ngIf="convocatoriasFiltradas.length === 0">
+        No hay convocatorias registradas
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Nueva/Editar -->
+  <div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ modoEdicion ? 'Editar Convocatoria' : 'Nueva Convocatoria' }}</h2>
+        <button class="btn-cerrar" (click)="cerrarModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" [(ngModel)]="convocatoriaActual.titulo" placeholder="Ej. Convocatoria Edición Agosto 2026">
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="convocatoriaActual.descripcion" rows="4" placeholder="Describe la convocatoria..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha inicio</label>
+            <input type="date" [(ngModel)]="convocatoriaActual.fechaInicio">
+          </div>
+          <div class="form-group">
+            <label>Fecha fin</label>
+            <input type="date" [(ngModel)]="convocatoriaActual.fechaFin">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>URL de imagen</label>
+          <input type="url" [(ngModel)]="convocatoriaActual.imagen" placeholder="https://...">
+        </div>
+
+        <div class="preview-imagen" *ngIf="convocatoriaActual.imagen">
+          <img [src]="convocatoriaActual.imagen" alt="Preview">
+        </div>
+
+        <div class="form-group form-checkbox">
+          <label class="switch-label">
+            <input type="checkbox" [(ngModel)]="convocatoriaActual.activa">
+            <span>Mostrar en la página pública</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-guardar" (click)="guardarConvocatoria()">
+          <ion-icon name="save-outline"></ion-icon>
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+
 </ion-content>

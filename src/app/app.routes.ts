@@ -30,25 +30,29 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.page').then(m => m.LoginPage)
   },
   {
-  path: 'registro',
-  loadComponent: () => import('./pages/registro/registro.page').then(m => m.RegistroPage)
+    path: 'registro',
+    loadComponent: () => import('./pages/registro/registro.page').then(m => m.RegistroPage)
   },
   {
     path: 'emprendimientos',
     loadComponent: () => import('./pages/emprendimientos/emprendimientos.page').then(m => m.EmprendimientosPage)
   },
   {
-  path: 'acerca',
-  loadComponent: () => import('./pages/acerca/acerca.page').then(m => m.AcercaPage)
+    path: 'acerca',
+    loadComponent: () => import('./pages/acerca/acerca.page').then(m => m.AcercaPage)
   },
   {
-  path: 'contacto',
-  loadComponent: () => import('./pages/contacto/contacto.page').then(m => m.ContactoPage)
+    path: 'contacto',
+    loadComponent: () => import('./pages/contacto/contacto.page').then(m => m.ContactoPage)
   },
   {
     path: 'mi-emprendimiento',
     loadComponent: () => import('./pages/mi-emprendimiento/mi-emprendimiento.page').then(m => m.MiEmprendimientoPage),
     canActivate: [authGuard]
+  },
+  {
+    path: 'convocatorias',
+    loadComponent: () => import('./pages/convocatorias/convocatorias.page').then( m => m.ConvocatoriasPage)
   },
   {
     path: 'perfil',
@@ -64,21 +68,20 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/admin/dashboard/dashboard.page').then(m => m.DashboardPage)
       },
       {
+        path: 'emprendimientos',
+        loadComponent: () => import('./pages/admin/emprendimientos/emprendimientos.page').then(m => m.EmprendimientosPage)
+      },
+      {
         path: 'convocatorias',
         loadComponent: () => import('./pages/admin/convocatorias/convocatorias.page').then(m => m.ConvocatoriasPage)
-      }
+      },
+      { path: 'acerca', 
+        loadComponent: () => import('./pages/admin/acerca/acerca.page').then(m => m.AcercaPage) 
+      },
+      {
+    path: 'contacto',
+    loadComponent: () => import('./pages/admin/contacto/contacto.page').then( m => m.ContactoPage)
+      },
     ]
   },
-  {
-    path: 'registro',
-    loadComponent: () => import('./pages/registro/registro.page').then( m => m.RegistroPage)
-  },
-  {
-    path: 'acerca',
-    loadComponent: () => import('./pages/acerca/acerca.page').then( m => m.AcercaPage)
-  },
-  {
-    path: 'contacto',
-    loadComponent: () => import('./pages/contacto/contacto.page').then( m => m.ContactoPage)
-  }
 ];

@@ -8,7 +8,7 @@ import {
   menuOutline, chevronUpOutline, chevronDownOutline,
   searchOutline, gridOutline, listOutline
 } from 'ionicons/icons';
-import { HeaderComponent } from '../../shared/header/header.component';
+import { HeaderComponent } from '../../shared/headers/public-header/header.component';
 import { EmprendimientoService } from '../../services/emprendimiento';
 import { Emprendimiento } from '../../models/emprendimiento.model';
 

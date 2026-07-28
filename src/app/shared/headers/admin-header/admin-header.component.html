@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <img src="assets/LogoMercadoNoctuno.png" height="60" alt="Market Nocturno" routerLink="/admin/dashboard" style="cursor:pointer">
+    </ion-buttons>
+    <div class="nav-links">
+      <a routerLink="/admin/dashboard" class="nav-link" [class.active]="isActive('/admin/dashboard')">DASHBOARD</a>
+      <a routerLink="/admin/emprendimientos" class="nav-link" [class.active]="isActive('/admin/emprendimientos')">EMPRENDIMIENTOS</a>
+      <a routerLink="/admin/acerca" class="nav-link" [class.active]="isActive('/admin/acerca')">ACERCA DE NOSOTROS</a>
+      <a routerLink="/admin/contacto" class="nav-link" [class.active]="isActive('/admin/contacto')">CONTÁCTANOS</a>
+      <a routerLink="/admin/convocatorias" class="nav-link" [class.active]="isActive('/admin/convocatorias')">CONVOCATORIAS</a>
+    </div>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/admin/perfil">
+        <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+        {{ nombreAdmin }}
+      </ion-button>
+      <a (click)="logout()" class="login-btn">
+        <ion-icon name="log-out-outline"></ion-icon>
+        SALIR
+      </a>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

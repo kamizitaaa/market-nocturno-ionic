@@ -1,0 +1,366 @@
+ion-content {
+  --background: #000;
+  color: #fff;
+}
+
+.admin-container {
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.admin-header {
+  text-align: center;
+  background: linear-gradient(135deg, #1a1a1a, #2a1a0a);
+  border: 2px solid #ffa500;
+  border-radius: 20px;
+  padding: 25px;
+
+  h1 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #ffa500;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #aaa;
+    font-size: 14px;
+  }
+}
+
+.seccion-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 15px;
+  padding: 25px;
+}
+
+.seccion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffa500;
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+
+  .form-group { flex: 1; }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 15px;
+
+  label {
+    color: #aaa;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  input, textarea {
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+
+    &:focus { border-color: #ffa500; }
+
+    &::placeholder { color: #555; }
+  }
+
+  textarea { resize: vertical; }
+}
+
+.preview-imagen {
+  margin-bottom: 15px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #333;
+  max-width: 300px;
+
+  img {
+    width: 100%;
+    display: block;
+  }
+}
+
+.btn-guardar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffa500;
+  color: #000;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+
+  ion-icon { font-size: 16px; }
+
+  &:hover { background: #ff6b00; }
+}
+
+.btn-agregar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ff1493;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+
+  ion-icon { font-size: 16px; }
+
+  &:hover { background: #cc0077; }
+}
+
+/* ===== EQUIPO ===== */
+.equipo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.equipo-card {
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 15px;
+  padding: 18px;
+  text-align: center;
+  transition: all 0.3s;
+
+  &:hover {
+    border-color: #ffa500;
+    transform: translateY(-3px);
+  }
+
+  .equipo-foto {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffa500;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .equipo-puesto {
+    font-size: 12px;
+    color: #ffa500;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .equipo-desc {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+}
+
+.equipo-acciones {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+
+  button {
+    padding: 5px 8px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .btn-editar {
+    background: rgba(255, 165, 0, 0.15);
+    color: #ffa500;
+    border: 1px solid #ffa500;
+
+    &:hover { background: #ffa500; color: #000; }
+  }
+
+  .btn-eliminar {
+    background: rgba(255, 0, 0, 0.15);
+    color: #ff4444;
+    border: 1px solid #ff4444;
+
+    &:hover { background: #ff4444; color: #fff; }
+  }
+}
+
+/* ===== GALERÍA ===== */
+.galeria-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.galeria-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #333;
+  aspect-ratio: 1;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .galeria-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    p {
+      color: #fff;
+      font-size: 12px;
+      margin: 0;
+    }
+  }
+
+  .btn-eliminar-img {
+    background: rgba(255, 68, 68, 0.2);
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    border-radius: 6px;
+    padding: 4px 6px;
+    cursor: pointer;
+    font-size: 12px;
+
+    &:hover { background: #ff4444; color: #fff; }
+  }
+}
+
+.sin-datos-full {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #555;
+  padding: 30px;
+  font-style: italic;
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  background: #111;
+  border: 2px solid #ffa500;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #333;
+
+  h2 {
+    color: #ffa500;
+    font-size: 18px;
+    font-weight: bold;
+  }
+}
+
+.btn-cerrar {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+
+  &:hover { color: #ff1493; }
+}
+
+.modal-body {
+  padding: 20px 25px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px 25px;
+  border-top: 1px solid #333;
+}
+
+.btn-cancelar {
+  background: transparent;
+  border: 1px solid #555;
+  color: #aaa;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover { border-color: #ff4444; color: #ff4444; }
+}
+
+.btn-guardar-modal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffa500;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+
+  ion-icon { font-size: 16px; }
+
+  &:hover { background: #ff6b00; }
+}

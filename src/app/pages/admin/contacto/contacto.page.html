@@ -1,0 +1,111 @@
+<app-admin-header></app-admin-header>
+
+<ion-content [fullscreen]="true">
+  <div class="admin-container">
+
+    <!-- Header -->
+    <div class="admin-header">
+      <h1>✨ SOLICITUDES DE CONTACTO ✨</h1>
+      <p>Revisa los mensajes enviados desde el formulario público</p>
+    </div>
+
+    <div class="busqueda-row">
+      <div class="busqueda-input">
+        <ion-icon name="search-outline"></ion-icon>
+        <input type="text" [(ngModel)]="textoBusqueda" placeholder="Busca por nombre, correo o asunto" class="busqueda-field">
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="tabla-section">
+      <div class="tabla-header">
+        <h2>✨ Mensajes Recibidos</h2>
+        <button class="btn-recargar" (click)="recargar()">
+          <ion-icon name="refresh-outline"></ion-icon>
+          Recargar
+        </button>
+      </div>
+      <div class="tabla-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NOMBRE</th>
+              <th>CORREO</th>
+              <th>ASUNTO</th>
+              <th>FECHA</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of solicitudesFiltradas">
+              <td>{{ s.id }}</td>
+              <td>{{ s.nombre }}</td>
+              <td>{{ s.email }}</td>
+              <td>{{ s.asunto }}</td>
+              <td>{{ s.fecha }}</td>
+              <td class="acciones">
+                <button class="btn-ver" (click)="verDetalle(s)">
+                  <ion-icon name="eye-outline"></ion-icon>
+                </button>
+                <button class="btn-eliminar" (click)="eliminarSolicitud(s)">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="solicitudesFiltradas.length === 0">
+              <td colspan="6" class="sin-datos">No hay solicitudes de contacto</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Detalle -->
+  <div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()" *ngIf="solicitudSeleccionada">
+      <div class="modal-header">
+        <h2>
+          <ion-icon name="mail-outline"></ion-icon>
+          {{ solicitudSeleccionada.asunto }}
+        </h2>
+        <button class="btn-cerrar" (click)="cerrarModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="detalle-fila">
+          <span class="detalle-label">Nombre:</span>
+          <span>{{ solicitudSeleccionada.nombre }}</span>
+        </div>
+        <div class="detalle-fila">
+          <span class="detalle-label">Correo:</span>
+          <span>{{ solicitudSeleccionada.email }}</span>
+        </div>
+        <div class="detalle-fila">
+          <span class="detalle-label">Fecha:</span>
+          <span>{{ solicitudSeleccionada.fecha }}</span>
+        </div>
+        <div class="detalle-mensaje">
+          <span class="detalle-label">Mensaje:</span>
+          <p>{{ solicitudSeleccionada.mensaje }}</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <a class="btn-responder" [href]="'mailto:' + solicitudSeleccionada.email + '?subject=Re: ' + solicitudSeleccionada.asunto">
+          <ion-icon name="mail-outline"></ion-icon>
+          Responder por correo
+        </a>
+        <button class="btn-eliminar-modal" (click)="eliminarSolicitud(solicitudSeleccionada)">
+          <ion-icon name="trash-outline"></ion-icon>
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

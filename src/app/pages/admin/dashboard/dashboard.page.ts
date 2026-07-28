@@ -6,9 +6,10 @@ import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   peopleOutline, pulseOutline, addCircleOutline, starOutline,
-  searchOutline, downloadOutline, createOutline, trashOutline
+  searchOutline, downloadOutline, createOutline, trashOutline,
+  personOutline, refreshOutline
 } from 'ionicons/icons';
-import { HeaderComponent } from '../../../shared/header/header.component';
+import { AdminHeaderComponent } from '../../../shared/headers/admin-header/admin-header.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,7 @@ import { HeaderComponent } from '../../../shared/header/header.component';
   imports: [
     CommonModule, FormsModule, RouterLink,
     IonContent, IonIcon,
-    HeaderComponent
+    AdminHeaderComponent
   ]
 })
 export class DashboardPage implements OnInit {
@@ -31,25 +32,6 @@ export class DashboardPage implements OnInit {
     nuevos: 0,
     destacados: 1
   };
-
-  emprendimientos = [
-    {
-      id: 1,
-      nombre: 'Tacos El Güero',
-      categoria: 'Comida',
-      precio: '$50-100',
-      estado: 'activo',
-      fecha: '2026-01-15'
-    },
-    {
-      id: 2,
-      nombre: 'Artesanías Lupita',
-      categoria: 'Artesanías',
-      precio: '$100-500',
-      estado: 'destacado',
-      fecha: '2026-02-20'
-    }
-  ];
 
   emprendedores = [
     {
@@ -73,9 +55,19 @@ export class DashboardPage implements OnInit {
   constructor() {
     addIcons({
       peopleOutline, pulseOutline, addCircleOutline, starOutline,
-      searchOutline, downloadOutline, createOutline, trashOutline
+      searchOutline, downloadOutline, createOutline, trashOutline,
+      personOutline, refreshOutline
     });
   }
 
   ngOnInit() {}
+
+  get emprendedoresFiltrados() {
+    if (!this.textoBusqueda) return this.emprendedores;
+    const texto = this.textoBusqueda.toLowerCase();
+    return this.emprendedores.filter(e =>
+      e.nombre.toLowerCase().includes(texto) ||
+      e.email.toLowerCase().includes(texto)
+    );
+  }
 }

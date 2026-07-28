@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
-import { HeaderComponent } from '../../shared/header/header.component';
+import { HeaderComponent } from '../../shared/headers/public-header/header.component';
 
 @Component({
   selector: 'app-acerca',

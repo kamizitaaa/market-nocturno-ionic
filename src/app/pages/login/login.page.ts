@@ -8,7 +8,7 @@ import {
   mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline,
   shieldCheckmarkOutline, chevronDownOutline, chevronUpOutline, refreshOutline
 } from 'ionicons/icons';
-import { HeaderComponent } from '../../shared/header/header.component';
+import { HeaderComponent } from '../../shared/headers/public-header/header.component';
 import { AuthService } from '../../services/auth';
 
 @Component({

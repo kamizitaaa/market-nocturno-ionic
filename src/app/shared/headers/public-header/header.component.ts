@@ -6,7 +6,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personOutline, cartOutline, personCircleOutline } from 'ionicons/icons';
-import { AuthService } from '../../services/auth';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-header',

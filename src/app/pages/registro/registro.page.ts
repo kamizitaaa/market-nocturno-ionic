@@ -5,7 +5,7 @@ import { RouterLink, Router } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
-import { HeaderComponent } from '../../shared/header/header.component';
+import { HeaderComponent } from '../../shared/headers/public-header/header.component';
 
 @Component({
   selector: 'app-registro',

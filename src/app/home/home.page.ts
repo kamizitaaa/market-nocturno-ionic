@@ -7,7 +7,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personOutline } from 'ionicons/icons';
-import { HeaderComponent } from '../shared/header/header.component';
+import { HeaderComponent } from '../shared/headers/public-header/header.component';
 
 @Component({
   selector: 'app-home',

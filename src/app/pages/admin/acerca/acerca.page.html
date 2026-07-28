@@ -1,0 +1,209 @@
+<app-admin-header></app-admin-header>
+
+<ion-content [fullscreen]="true">
+  <div class="admin-container">
+
+    <!-- Header -->
+    <div class="admin-header">
+      <h1>✨ ACERCA DE NOSOTROS ✨</h1>
+      <p>Edita la información pública de historia, misión, visión, equipo y galería</p>
+    </div>
+
+    <!-- ===== HISTORIA ===== -->
+    <div class="seccion-card">
+      <div class="seccion-header">
+        <h2>📖 Nuestra Historia</h2>
+      </div>
+
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" [(ngModel)]="historia.titulo" placeholder="Nuestra Historia">
+      </div>
+
+      <div class="form-group">
+        <label>Texto</label>
+        <textarea [(ngModel)]="historia.texto" rows="5" placeholder="Cuenta la historia del Market Nocturno..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>URL de imagen</label>
+        <input type="url" [(ngModel)]="historia.imagen" placeholder="https://...">
+      </div>
+
+      <div class="preview-imagen" *ngIf="historia.imagen">
+        <img [src]="historia.imagen" alt="Preview historia">
+      </div>
+
+      <button class="btn-guardar" (click)="guardarHistoria()">
+        <ion-icon name="save-outline"></ion-icon>
+        Guardar Historia
+      </button>
+    </div>
+
+    <!-- ===== MISIÓN Y VISIÓN ===== -->
+    <div class="seccion-card">
+      <div class="seccion-header">
+        <h2>🎯 Misión y Visión</h2>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Misión</label>
+          <textarea [(ngModel)]="mision" rows="4" placeholder="Nuestra misión..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Visión</label>
+          <textarea [(ngModel)]="vision" rows="4" placeholder="Nuestra visión..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn-guardar" (click)="guardarMisionVision()">
+        <ion-icon name="save-outline"></ion-icon>
+        Guardar Misión y Visión
+      </button>
+    </div>
+
+    <!-- ===== EQUIPO ===== -->
+    <div class="seccion-card">
+      <div class="seccion-header">
+        <h2>👥 Nuestro Equipo</h2>
+        <button class="btn-agregar" (click)="abrirModalNuevoMiembro()">
+          <ion-icon name="add-outline"></ion-icon>
+          Nuevo Integrante
+        </button>
+      </div>
+
+      <div class="equipo-grid">
+        <div class="equipo-card" *ngFor="let miembro of equipo">
+          <img [src]="miembro.foto" [alt]="miembro.nombre" class="equipo-foto">
+          <h3>{{ miembro.nombre }}</h3>
+          <p class="equipo-puesto">{{ miembro.puesto }}</p>
+          <p class="equipo-desc">{{ miembro.descripcion }}</p>
+          <div class="equipo-acciones">
+            <button class="btn-editar" (click)="abrirModalEditarMiembro(miembro)">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
+            <button class="btn-eliminar" (click)="eliminarMiembro(miembro)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="sin-datos-full" *ngIf="equipo.length === 0">
+          No hay integrantes registrados
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== GALERÍA ===== -->
+    <div class="seccion-card">
+      <div class="seccion-header">
+        <h2>🖼️ Galería</h2>
+        <button class="btn-agregar" (click)="abrirModalGaleria()">
+          <ion-icon name="add-outline"></ion-icon>
+          Nueva Imagen
+        </button>
+      </div>
+
+      <div class="galeria-grid">
+        <div class="galeria-item" *ngFor="let img of galeria">
+          <img [src]="img.url" [alt]="img.titulo">
+          <div class="galeria-overlay">
+            <p>{{ img.titulo }}</p>
+            <button class="btn-eliminar-img" (click)="eliminarImagenGaleria(img)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="sin-datos-full" *ngIf="galeria.length === 0">
+          No hay imágenes en la galería
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Equipo -->
+  <div class="modal-overlay" *ngIf="modalEquipoAbierto" (click)="cerrarModalEquipo()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ modoEdicionEquipo ? 'Editar Integrante' : 'Nuevo Integrante' }}</h2>
+        <button class="btn-cerrar" (click)="cerrarModalEquipo()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="miembroActual.nombre" placeholder="Nombre completo">
+        </div>
+
+        <div class="form-group">
+          <label>Puesto</label>
+          <input type="text" [(ngModel)]="miembroActual.puesto" placeholder="Ej. Coordinador de Logística">
+        </div>
+
+        <div class="form-group">
+          <label>URL de foto</label>
+          <input type="url" [(ngModel)]="miembroActual.foto" placeholder="https://...">
+        </div>
+
+        <div class="preview-imagen" *ngIf="miembroActual.foto">
+          <img [src]="miembroActual.foto" alt="Preview">
+        </div>
+
+        <div class="form-group">
+          <label>Descripción breve</label>
+          <textarea [(ngModel)]="miembroActual.descripcion" rows="3" placeholder="Breve descripción del integrante"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancelar" (click)="cerrarModalEquipo()">Cancelar</button>
+        <button class="btn-guardar-modal" (click)="guardarMiembro()">
+          <ion-icon name="save-outline"></ion-icon>
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Galería -->
+  <div class="modal-overlay" *ngIf="modalGaleriaAbierto" (click)="cerrarModalGaleria()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Nueva Imagen de Galería</h2>
+        <button class="btn-cerrar" (click)="cerrarModalGaleria()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>URL de imagen</label>
+          <input type="url" [(ngModel)]="imagenActual.url" placeholder="https://...">
+        </div>
+
+        <div class="preview-imagen" *ngIf="imagenActual.url">
+          <img [src]="imagenActual.url" alt="Preview">
+        </div>
+
+        <div class="form-group">
+          <label>Título / descripción</label>
+          <input type="text" [(ngModel)]="imagenActual.titulo" placeholder="Ej. Edición Enero 2026">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancelar" (click)="cerrarModalGaleria()">Cancelar</button>
+        <button class="btn-guardar-modal" (click)="agregarImagenGaleria()">
+          <ion-icon name="save-outline"></ion-icon>
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</ion-content>
