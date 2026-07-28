@@ -1,12 +1,15 @@
 import { CanActivateFn } from '@angular/router';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = async () => {
   const router = inject(Router);
-  const token = localStorage.getItem('token');
+  const authService = inject(AuthService);
 
-  if (token) {
+  const autenticado = await authService.isAuthenticated();
+
+  if (autenticado) {
     return true;
   }
 

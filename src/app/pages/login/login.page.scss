@@ -84,15 +84,19 @@ ion-content {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #2a2a2a;
-    border-radius: 10px;
-    padding: 10px 15px;
+    background: #000;
+    border: 2px solid #ffa500;
+    border-radius: 25px;
+    padding: 12px 18px;
     color: #fff;
     font-size: 14px;
     margin-bottom: 10px;
+    cursor: pointer;
 
     ion-icon {
       color: #ffa500;
+      font-size: 18px;
+      flex-shrink: 0;
     }
 
     .ml-auto {
@@ -100,44 +104,41 @@ ion-content {
     }
   }
 
-  .captcha-math {
+  .captcha-fila {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #2a2a2a;
-    border-radius: 10px;
-    padding: 10px 15px;
+    background: #000;
+    border: 2px solid #ffa500;
+    border-radius: 25px;
+    padding: 10px 16px;
     color: #fff;
 
-    .num-circle {
-      background: #000;
-      border: 2px solid #ffa500;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .num {
       font-weight: bold;
       font-size: 16px;
     }
 
     .operador {
       font-weight: bold;
-      font-size: 18px;
-      color: #fff;
+      font-size: 16px;
+      color: #ffa500;
+    }
+
+    .cargando-texto {
+      flex: 1;
+      color: #aaa;
+      font-size: 14px;
     }
 
     .captcha-input {
-      background: #000;
-      border: 1px solid #555;
-      border-radius: 8px;
-      color: #fff;
-      width: 100px;
-      padding: 8px 10px;
-      font-size: 14px;
+      background: transparent;
+      border: none;
       outline: none;
+      color: #fff;
+      font-size: 15px;
       flex: 1;
+      min-width: 0;
 
       &::placeholder {
         color: #555;
@@ -147,8 +148,8 @@ ion-content {
     .refresh-icon {
       cursor: pointer;
       color: #ffa500;
-      font-size: 22px;
-      margin-left: auto;
+      font-size: 20px;
+      flex-shrink: 0;
 
       &:hover {
         transform: rotate(180deg);

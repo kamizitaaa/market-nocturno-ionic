@@ -24,13 +24,25 @@
 
       <!-- Captcha real, viene del backend -->
       <div class="form-group captcha-group">
-        <div class="captcha-box">
+        <div class="captcha-box" (click)="toggleCaptchaVista()">
           <ion-icon name="shield-checkmark-outline"></ion-icon>
-          <span *ngIf="!cargandoCaptcha">¿Cuánto es {{ captchaNum1 }} × {{ captchaNum2 }}?</span>
-          <span *ngIf="cargandoCaptcha">Cargando verificación...</span>
+          <span>Verificación humana *</span>
+          <ion-icon [name]="mostrarCaptcha ? 'chevron-up-outline' : 'chevron-down-outline'" class="ml-auto"></ion-icon>
+        </div>
+
+        <div class="captcha-fila" *ngIf="mostrarCaptcha">
+          <ng-container *ngIf="!cargandoCaptcha; else cargando">
+            <span class="num">{{ captchaNum1 }}</span>
+            <span class="operador">x</span>
+            <span class="num">{{ captchaNum2 }}</span>
+            <span class="operador">=</span>
+            <input type="text" [(ngModel)]="captchaRespuesta" placeholder="Tu respuesta" class="captcha-input">
+          </ng-container>
+          <ng-template #cargando>
+            <span class="cargando-texto">Cargando verificación...</span>
+          </ng-template>
           <ion-icon name="refresh-outline" (click)="cargarCaptcha()" class="refresh-icon"></ion-icon>
         </div>
-        <input type="text" [(ngModel)]="captchaRespuesta" placeholder="Tu respuesta" class="captcha-input">
       </div>
 
       <div class="form-options">

@@ -35,6 +35,7 @@ export class LoginPage implements OnInit {
   captchaRespuesta = '';
 
   cargandoCaptcha = false;
+  mostrarCaptcha = true; // arranca visible
 
   constructor(
     private authService: AuthService,
@@ -69,6 +70,10 @@ export class LoginPage implements OnInit {
 
   togglePassword() {
     this.mostrarPassword = !this.mostrarPassword;
+  }
+
+  toggleCaptchaVista() {
+    this.mostrarCaptcha = !this.mostrarCaptcha;
   }
 
   login() {

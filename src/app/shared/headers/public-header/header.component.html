@@ -9,25 +9,43 @@
       <a routerLink="/acerca" class="nav-link" [class.active]="isActive('/acerca')">ACERCA DE NOSOTROS</a>
       <a routerLink="/contacto" class="nav-link" [class.active]="isActive('/contacto')">CONTÁCTANOS</a>
       <a routerLink="/convocatorias" class="nav-link" [class.active]="isActive('/convocatorias')">CONVOCATORIAS</a>
+      <a *ngIf="rolUsuario === 'emprendedor'" routerLink="/mi-emprendimiento" class="nav-link" [class.active]="isActive('/mi-emprendimiento')">MI EMPRENDIMIENTO</a>
     </div>
     <ion-buttons slot="end">
       <!-- Sin sesión -->
-    <ng-container *ngIf="!isLoggedIn">
-    <a routerLink="/login" class="login-btn">
-    <ion-icon name="person-outline"></ion-icon>
-    INICIAR SESIÓN
-    </a>
-    </ng-container>
+      <ng-container *ngIf="!isLoggedIn">
+        <a routerLink="/login" class="login-btn">
+          <ion-icon name="person-outline"></ion-icon>
+          INICIAR SESIÓN
+        </a>
+      </ng-container>
 
       <!-- Con sesión -->
       <ng-container *ngIf="isLoggedIn">
         <ion-button (click)="verCarrito()">
           <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
         </ion-button>
-        <ion-button routerLink="/perfil">
+
+        <ion-button (click)="toggleMenu()" id="menu-usuario-trigger">
           <ion-icon name="person-circle-outline" slot="start"></ion-icon>
           BIENVENIDO, {{ nombreUsuario }}
+          <ion-icon [name]="menuAbierto ? 'chevron-up-outline' : 'chevron-down-outline'" slot="end"></ion-icon>
         </ion-button>
+
+        <ion-popover trigger="menu-usuario-trigger" [isOpen]="menuAbierto" (didDismiss)="menuAbierto = false">
+          <ng-template>
+            <ion-list>
+              <ion-item button routerLink="/perfil" (click)="menuAbierto = false">
+                <ion-icon name="person-outline" slot="start"></ion-icon>
+                Mi perfil
+              </ion-item>
+              <ion-item button (click)="cerrarSesion(); menuAbierto = false">
+                <ion-icon name="log-out-outline" slot="start"></ion-icon>
+                Cerrar sesión
+              </ion-item>
+            </ion-list>
+          </ng-template>
+        </ion-popover>
       </ng-container>
     </ion-buttons>
   </ion-toolbar>
