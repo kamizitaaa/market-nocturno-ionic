@@ -1,46 +1,40 @@
 <app-header></app-header>
 
-<ion-content [fullscreen]="true">
-  <div class="login-container">
-    <div class="login-box">
+<ion-content [fullscreen]="true" class="mfa-content">
+  <div class="mfa-container">
+    <div class="mfa-box">
 
-      <h2>BIENVENIDO DE NUEVO</h2>
-      <p class="subtitle">Ingresa tus credenciales para continuar</p>
+      <div class="mfa-icon">
+        <ion-icon name="mail-unread-outline"></ion-icon>
+      </div>
+
+      <h2>VERIFICA TU IDENTIDAD</h2>
+      <p class="subtitle">
+        Te enviamos un código de 6 dígitos a tu correo. Ingrésalo para continuar.
+      </p>
 
       <div class="form-group">
         <div class="input-icon">
-          <ion-icon name="mail-outline"></ion-icon>
-          <input type="email" [(ngModel)]="email" placeholder="correo@ejemplo.com" class="custom-input">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="input-icon">
-          <ion-icon name="lock-closed-outline"></ion-icon>
-          <input [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="••••••••" class="custom-input">
-          <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'" (click)="togglePassword()" class="eye-icon"></ion-icon>
-        </div>
-      </div>
-
-      <!-- Captcha real, viene del backend -->
-      <div class="form-group captcha-group">
-        <div class="captcha-box">
           <ion-icon name="shield-checkmark-outline"></ion-icon>
-          <span *ngIf="!cargandoCaptcha">¿Cuánto es {{ captchaNum1 }} × {{ captchaNum2 }}?</span>
-          <span *ngIf="cargandoCaptcha">Cargando verificación...</span>
-          <ion-icon name="refresh-outline" (click)="cargarCaptcha()" class="refresh-icon"></ion-icon>
+          <input
+            type="text"
+            inputmode="numeric"
+            maxlength="6"
+            [(ngModel)]="codigo"
+            placeholder="123456"
+            class="custom-input codigo-input">
         </div>
-        <input type="text" [(ngModel)]="captchaRespuesta" placeholder="Tu respuesta" class="captcha-input">
       </div>
 
-      <div class="form-options">
-        <a class="forgot">¿Olvidaste tu contraseña?</a>
-      </div>
+      <p class="mfa-error" *ngIf="error">{{ error }}</p>
 
-      <button class="btn-login" (click)="login()">→ Iniciar Sesión</button>
+      <button class="btn-login" (click)="verificar()" [disabled]="cargando">
+        <ion-icon *ngIf="cargando" name="refresh-outline" class="spin"></ion-icon>
+        {{ cargando ? 'Verificando...' : '→ Verificar código' }}
+      </button>
 
       <p class="register-link">
-        ¿No tienes una cuenta? <a routerLink="/registro">¡Regístrate!</a>
+        <a (click)="volverAlLogin()">Volver al inicio de sesión</a>
       </p>
 
     </div>

@@ -30,6 +30,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.page').then(m => m.LoginPage)
   },
   {
+  path: 'verificar-mfa',
+  loadComponent: () => import('./pages/verificar-mfa/verificar-mfa.page').then(m => m.VerificarMfaPage)
+  },
+  {
     path: 'registro',
     loadComponent: () => import('./pages/registro/registro.page').then(m => m.RegistroPage)
   },

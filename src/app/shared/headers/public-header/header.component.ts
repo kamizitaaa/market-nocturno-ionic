@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import {
   IonHeader, IonToolbar, IonButtons, IonButton, IonIcon
 } from '@ionic/angular/standalone';
@@ -32,12 +33,21 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.checkAuth();
+
+    // Vuelve a revisar el estado de sesión cada vez que cambias de página
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.checkAuth();
+    });
   }
 
-  checkAuth() {
-    this.isLoggedIn = this.authService.isAuthenticated();
+  async checkAuth() {
+    this.isLoggedIn = await this.authService.isAuthenticated();
     if (this.isLoggedIn) {
-      this.nombreUsuario = localStorage.getItem('nombre') || 'Usuario';
+      this.nombreUsuario = await this.authService.getNombre() || 'Usuario';
+    } else {
+      this.nombreUsuario = '';
     }
   }
 
@@ -51,5 +61,12 @@ export class HeaderComponent implements OnInit {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  async cerrarSesion() {
+    await this.authService.removeToken();
+    this.isLoggedIn = false;
+    this.nombreUsuario = '';
+    this.router.navigate(['/login']);
   }
 }

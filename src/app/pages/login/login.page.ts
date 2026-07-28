@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
@@ -27,11 +27,14 @@ export class LoginPage implements OnInit {
   email = '';
   password = '';
   mostrarPassword = false;
-  mostrarCaptcha = false;
-  recuerdame = false;
+
+  // Captcha real (viene del backend)
+  captchaToken = '';
   captchaNum1 = 0;
   captchaNum2 = 0;
-  captchaRespuesta: number | null = null;
+  captchaRespuesta = '';
+
+  cargandoCaptcha = false;
 
   constructor(
     private authService: AuthService,
@@ -44,21 +47,28 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
-    this.generarCaptcha();
+    this.cargarCaptcha();
   }
 
-  generarCaptcha() {
-    this.captchaNum1 = Math.floor(Math.random() * 9) + 1;
-    this.captchaNum2 = Math.floor(Math.random() * 9) + 1;
-    this.captchaRespuesta = null;
+  cargarCaptcha() {
+    this.cargandoCaptcha = true;
+    this.authService.getCaptcha().subscribe({
+      next: (res) => {
+        this.captchaToken = res.captcha_token;
+        this.captchaNum1 = res.numero1;
+        this.captchaNum2 = res.numero2;
+        this.captchaRespuesta = '';
+        this.cargandoCaptcha = false;
+      },
+      error: () => {
+        alert('No se pudo cargar el captcha, intenta de nuevo');
+        this.cargandoCaptcha = false;
+      }
+    });
   }
 
   togglePassword() {
     this.mostrarPassword = !this.mostrarPassword;
-  }
-
-  toggleCaptcha() {
-    this.mostrarCaptcha = !this.mostrarCaptcha;
   }
 
   login() {
@@ -67,22 +77,18 @@ export class LoginPage implements OnInit {
       return;
     }
 
-    if (!this.mostrarCaptcha || this.captchaRespuesta !== this.captchaNum1 * this.captchaNum2) {
+    if (!this.captchaRespuesta) {
       alert('Por favor completa la verificación humana');
-      this.mostrarCaptcha = true;
       return;
     }
 
-    this.authService.login(this.email, this.password).subscribe({
+    this.authService.login(this.email, this.password, this.captchaToken, this.captchaRespuesta).subscribe({
       next: (res) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('rol', res.rol);
-        localStorage.setItem('nombre', res.nombre);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/verificar-mfa'], { state: { userId: res.user_id } });
       },
       error: () => {
-        alert('Credenciales incorrectas');
-        this.generarCaptcha();
+        alert('Credenciales incorrectas o captcha inválido');
+        this.cargarCaptcha();
       }
     });
   }

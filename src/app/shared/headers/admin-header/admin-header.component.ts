@@ -29,16 +29,16 @@ export class AdminHeaderComponent implements OnInit {
     addIcons({ logOutOutline, personCircleOutline });
   }
 
-  ngOnInit() {
-    this.nombreAdmin = localStorage.getItem('nombre') || 'Admin';
+  async ngOnInit() {
+    this.nombreAdmin = await this.authService.getNombre() || 'Admin';
   }
 
   isActive(path: string): boolean {
     return this.router.url.startsWith(path);
   }
 
-  logout() {
-    this.authService.logout();
+  async logout() {
+    await this.authService.removeToken();
     this.router.navigate(['/login']);
   }
 }
