@@ -1,13 +1,67 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>mi-emprendimiento</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header></app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">mi-emprendimiento</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="mi-emp-content">
+
+  <div class="mi-emp-container">
+    <h1 class="mi-emp-titulo">
+      <ion-icon name="storefront-outline"></ion-icon>
+      Pedidos de mi Emprendimiento
+    </h1>
+
+    <div class="sub-pedido-card" *ngFor="let sub of subPedidos">
+
+      <div class="sub-header">
+        <span class="sub-cliente">
+          Pedido de {{ sub.pedido.cliente.nombre }} {{ sub.pedido.cliente.apellido_paterno }}
+        </span>
+        <span class="sub-estado" [ngClass]="'estado-' + sub.estado">
+          {{ etiquetaEstado(sub.estado) }}
+        </span>
+      </div>
+
+      <div class="sub-item" *ngFor="let item of sub.items">
+        <span>{{ item.producto.nombre }} x{{ item.cantidad }}</span>
+        <span>${{ item.precio_unitario }}</span>
+      </div>
+
+      <div class="sub-footer">
+        <span class="sub-total">Total: ${{ subtotal(sub).toFixed(2) }}</span>
+
+        <div class="sub-acciones" *ngIf="sub.estado !== 'entregado' && sub.estado !== 'cancelado'">
+          <button
+            *ngIf="sub.estado === 'pendiente'"
+            class="btn-accion btn-listo"
+            (click)="cambiarEstado(sub, 'listo_para_entregar')"
+            [disabled]="actualizandoId === sub.id">
+            <ion-icon name="time-outline"></ion-icon>
+            Marcar listo
+          </button>
+
+          <button
+            *ngIf="sub.estado === 'listo_para_entregar'"
+            class="btn-accion btn-entregado"
+            (click)="cambiarEstado(sub, 'entregado')"
+            [disabled]="actualizandoId === sub.id">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Marcar entregado
+          </button>
+
+          <button
+            class="btn-accion btn-cancelar"
+            (click)="cambiarEstado(sub, 'cancelado')"
+            [disabled]="actualizandoId === sub.id">
+            <ion-icon name="close-circle-outline"></ion-icon>
+            Cancelar
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sin-pedidos" *ngIf="!cargando && subPedidos.length === 0">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <p>Aún no tienes pedidos en tu emprendimiento</p>
+    </div>
+  </div>
+
 </ion-content>

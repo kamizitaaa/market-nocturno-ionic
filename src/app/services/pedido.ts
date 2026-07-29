@@ -21,4 +21,12 @@ export class PedidoService {
   cancelarSubPedido(subPedidoId: number): Observable<any> {
   return this.http.put(`${this.apiUrl}/pedidos/${subPedidoId}/cancelar`, {});
     }
+
+    pedidosDeMiEmprendimiento(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/pedidos-emprendimiento`);
+    }
+
+    actualizarEstadoSubPedido(subPedidoId: number, estado: string): Observable<any> {
+  return this.http.put(`${this.apiUrl}/pedidos-emprendimiento/${subPedidoId}/estado`, { estado });
+    }
 }
