@@ -1,0 +1,50 @@
+<app-header></app-header>
+
+<ion-content [fullscreen]="true" class="pedidos-content">
+
+  <div class="pedidos-container">
+    <h1 class="pedidos-titulo">
+      <ion-icon name="receipt-outline"></ion-icon>
+      Mis Pedidos
+    </h1>
+
+    <div class="pedido-card" *ngFor="let pedido of pedidos">
+      <div class="sub-pedido" *ngFor="let sub of pedido.sub_pedidos">
+
+        <div class="sub-header">
+          <span class="sub-negocio">
+            <ion-icon name="storefront-outline"></ion-icon>
+            {{ sub.emprendimiento?.nombre }}
+          </span>
+          <span class="sub-estado" [ngClass]="'estado-' + sub.estado">
+            {{ etiquetaEstado(sub.estado) }}
+          </span>
+        </div>
+
+        <div class="sub-item" *ngFor="let item of sub.items">
+          <span class="item-nombre">{{ item.producto?.nombre }} x{{ item.cantidad }}</span>
+          <span class="item-precio">${{ item.precio_unitario }}</span>
+        </div>
+
+        <div class="sub-footer">
+          <span class="sub-total">Total: ${{ subtotalSubPedido(sub).toFixed(2) }}</span>
+          <button
+            *ngIf="puedeCancelar(sub)"
+            class="btn-cancelar"
+            (click)="cancelar(sub)"
+            [disabled]="cancelandoId === sub.id">
+            <ion-icon name="close-circle-outline"></ion-icon>
+            {{ cancelandoId === sub.id ? 'Cancelando...' : 'Cancelar' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="sin-pedidos" *ngIf="!cargando && pedidos.length === 0">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <p>Aún no tienes pedidos</p>
+    </div>
+  </div>
+
+</ion-content>

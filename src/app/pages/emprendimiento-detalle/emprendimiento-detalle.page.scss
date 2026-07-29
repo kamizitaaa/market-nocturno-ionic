@@ -1,0 +1,166 @@
+.detalle-content {
+  --background: #000;
+}
+
+.detalle-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  color: #fff;
+}
+
+.btn-volver {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #ffa500;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 24px;
+  font-size: 14px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.emp-header {
+  display: flex;
+  gap: 30px;
+  background: #1a1a1a;
+  border: 2px solid #ffa500;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.emp-imagen {
+  width: 280px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 16px;
+  flex-shrink: 0;
+}
+
+.emp-datos {
+  flex: 1;
+  min-width: 250px;
+
+  h1 {
+    font-size: 28px;
+    margin: 8px 0;
+  }
+}
+
+.emp-categoria {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffa500;
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.emp-descripcion {
+  color: #ccc;
+  margin: 12px 0;
+}
+
+.emp-precio {
+  color: #ffa500;
+  font-weight: bold;
+}
+
+.productos-titulo {
+  font-size: 22px;
+  margin-bottom: 20px;
+  border-left: 4px solid #ffa500;
+  padding-left: 12px;
+}
+
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.producto-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: #ffa500;
+  }
+
+  img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+}
+
+.producto-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.producto-desc {
+  color: #999;
+  font-size: 13px;
+  margin: 0;
+}
+
+.producto-precio {
+  color: #ffa500;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 4px 0;
+}
+
+.btn-agregar {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ffa500, #ff6b00);
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secundario {
+  background: transparent;
+  border: 2px solid #ffa500;
+  color: #ffa500;
+}
+
+.no-productos, .no-encontrado {
+  text-align: center;
+  color: #888;
+  padding: 40px;
+}

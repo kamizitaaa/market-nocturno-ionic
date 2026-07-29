@@ -9,7 +9,7 @@ import {
 import { addIcons } from 'ionicons';
 import {
   personOutline, cartOutline, personCircleOutline,
-  chevronDownOutline, chevronUpOutline, logOutOutline
+  chevronDownOutline, chevronUpOutline, logOutOutline, receiptOutline
 } from 'ionicons/icons';
 import { AuthService } from '../../../services/auth';
 
@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
   ) {
     addIcons({
       personOutline, cartOutline, personCircleOutline,
-      chevronDownOutline, chevronUpOutline, logOutOutline
+      chevronDownOutline, chevronUpOutline, logOutOutline, receiptOutline
     });
   }
 

@@ -1,0 +1,132 @@
+.pedidos-content {
+  --background: #000;
+}
+
+.pedidos-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  color: #fff;
+}
+
+.pedidos-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 26px;
+  margin-bottom: 24px;
+
+  ion-icon {
+    color: #ffa500;
+  }
+}
+
+.pedido-card {
+  margin-bottom: 16px;
+}
+
+.sub-pedido {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.sub-negocio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  color: #ffa500;
+
+  ion-icon {
+    font-size: 18px;
+  }
+}
+
+.sub-estado {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+
+  &.estado-pendiente {
+    background: rgba(255, 165, 0, 0.15);
+    color: #ffa500;
+  }
+  &.estado-listo_para_entregar {
+    background: rgba(0, 200, 150, 0.15);
+    color: #00c896;
+  }
+  &.estado-entregado {
+    background: rgba(100, 100, 255, 0.15);
+    color: #7a7aff;
+  }
+  &.estado-cancelado {
+    background: rgba(255, 60, 60, 0.15);
+    color: #ff5c5c;
+  }
+}
+
+.sub-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 6px;
+}
+
+.sub-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #333;
+}
+
+.sub-total {
+  font-weight: bold;
+  color: #ffa500;
+}
+
+.btn-cancelar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid #ff5c5c;
+  color: #ff5c5c;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.sin-pedidos {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+
+  ion-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    color: #444;
+  }
+}

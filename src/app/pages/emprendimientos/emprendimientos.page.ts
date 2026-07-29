@@ -32,6 +32,7 @@ export class EmprendimientosPage implements OnInit {
   filtroActivo = false;
   filtroDestacado = false;
   filtroPrecio = '';
+  cargando = false;
 
   filtros = {
     categoria: true,
@@ -39,14 +40,8 @@ export class EmprendimientosPage implements OnInit {
     precio: true
   };
 
-  categorias = [
-    { nombre: 'Comida', seleccionada: false },
-    { nombre: 'Artesanías', seleccionada: false },
-    { nombre: 'Bebidas', seleccionada: false },
-    { nombre: 'Ropa', seleccionada: false },
-    { nombre: 'Belleza', seleccionada: false },
-    { nombre: 'Accesorios', seleccionada: false }
-  ];
+  // Ahora se llenan dinámicamente desde el backend, no hardcodeadas
+  categorias: { id: number; nombre: string; seleccionada: boolean }[] = [];
 
   constructor(private emprendimientoService: EmprendimientoService) {
     addIcons({
@@ -60,17 +55,34 @@ export class EmprendimientosPage implements OnInit {
   }
 
   cargarEmprendimientos() {
+    this.cargando = true;
     this.emprendimientoService.getAll().subscribe({
       next: (data) => {
         this.emprendimientos = data;
         this.emprendimientosFiltrados = data;
+        this.extraerCategorias(data);
+        this.cargando = false;
       },
       error: () => {
-        // Datos de prueba mientras no hay backend
         this.emprendimientos = [];
         this.emprendimientosFiltrados = [];
+        this.cargando = false;
       }
     });
+  }
+
+  // Construye la lista de categorías a partir de los emprendimientos que sí existen,
+  // en vez de tener una lista fija que podría no coincidir con tu backend
+  extraerCategorias(data: Emprendimiento[]) {
+    const nombresUnicos = new Map<number, string>();
+    data.forEach(e => {
+      if (e.categoria) {
+        nombresUnicos.set(e.categoria.id, e.categoria.nombre);
+      }
+    });
+    this.categorias = Array.from(nombresUnicos, ([id, nombre]) => ({
+      id, nombre, seleccionada: false
+    }));
   }
 
   toggleFiltro(filtro: string) {
@@ -84,23 +96,23 @@ export class EmprendimientosPage implements OnInit {
       const texto = this.textoBusqueda.toLowerCase();
       resultado = resultado.filter(e =>
         e.nombre.toLowerCase().includes(texto) ||
-        e.categoria.toLowerCase().includes(texto) ||
+        (e.categoria?.nombre.toLowerCase().includes(texto) ?? false) ||
         e.descripcion.toLowerCase().includes(texto)
       );
     }
 
-    const categoriasSeleccionadas = this.categorias
+    const categoriaIdsSeleccionadas = this.categorias
       .filter(c => c.seleccionada)
-      .map(c => c.nombre);
+      .map(c => c.id);
 
-    if (categoriasSeleccionadas.length > 0) {
+    if (categoriaIdsSeleccionadas.length > 0) {
       resultado = resultado.filter(e =>
-        categoriasSeleccionadas.includes(e.categoria)
+        categoriaIdsSeleccionadas.includes(e.categoria_id)
       );
     }
 
     if (this.filtroActivo) {
-      resultado = resultado.filter(e => e.activo);
+      resultado = resultado.filter(e => e.estado === 'activo');
     }
 
     this.emprendimientosFiltrados = resultado;

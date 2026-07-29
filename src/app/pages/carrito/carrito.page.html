@@ -1,0 +1,64 @@
+<app-header></app-header>
+
+<ion-content [fullscreen]="true" class="carrito-content">
+
+  <div class="carrito-container">
+    <h1 class="carrito-titulo">
+      <ion-icon name="cart-outline"></ion-icon>
+      Mi Carrito
+    </h1>
+
+    <div class="carrito-lista" *ngIf="!cargando && carrito && carrito.items.length > 0">
+      <div class="grupo-emprendimiento" *ngFor="let grupo of itemsAgrupados">
+        <h2 class="grupo-titulo">
+          <ion-icon name="storefront-outline"></ion-icon>
+          {{ grupo.emprendimientoNombre }}
+        </h2>
+
+        <div class="carrito-item" *ngFor="let item of grupo.items">
+          <img [src]="item.producto.imagen || 'assets/default.png'" [alt]="item.producto.nombre">
+
+          <div class="item-info">
+            <h3>{{ item.producto.nombre }}</h3>
+            <span class="item-precio">${{ item.producto.precio }} c/u</span>
+          </div>
+
+          <div class="item-cantidad">
+            <button (click)="cambiarCantidad(item, -1)" [disabled]="actualizandoId === item.id">
+              <ion-icon name="remove-outline"></ion-icon>
+            </button>
+            <span>{{ item.cantidad }}</span>
+            <button (click)="cambiarCantidad(item, 1)" [disabled]="actualizandoId === item.id">
+              <ion-icon name="add-outline"></ion-icon>
+            </button>
+          </div>
+
+          <div class="item-subtotal">
+            ${{ subtotal(item).toFixed(2) }}
+          </div>
+
+          <button class="btn-eliminar" (click)="eliminarItem(item)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="carrito-vacio" *ngIf="!cargando && (!carrito || carrito.items.length === 0)">
+      <ion-icon name="cart-outline"></ion-icon>
+      <p>Tu carrito está vacío</p>
+    </div>
+
+    <div class="carrito-resumen" *ngIf="!cargando && carrito && carrito.items.length > 0">
+      <div class="resumen-total">
+        <span>Total</span>
+        <span class="total-monto">${{ total.toFixed(2) }}</span>
+      </div>
+      <button class="btn-confirmar" (click)="confirmarPedido()" [disabled]="confirmando">
+        <ion-icon name="bag-check-outline"></ion-icon>
+        {{ confirmando ? 'Confirmando...' : 'Confirmar pedido' }}
+      </button>
+    </div>
+  </div>
+
+</ion-content>

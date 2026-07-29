@@ -1,0 +1,64 @@
+<app-header></app-header>
+
+<ion-content [fullscreen]="true" class="detalle-content">
+
+  <div class="detalle-container" *ngIf="emprendimiento">
+
+    <button class="btn-volver" (click)="volver()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      Volver a Emprendimientos
+    </button>
+
+    <div class="emp-header">
+      <img [src]="emprendimiento.imagen || 'assets/default.png'" [alt]="emprendimiento.nombre" class="emp-imagen">
+      <div class="emp-datos">
+        <span class="emp-categoria" *ngIf="emprendimiento.categoria">
+          <ion-icon name="storefront-outline"></ion-icon>
+          {{ emprendimiento.categoria.nombre }}
+        </span>
+        <h1>{{ emprendimiento.nombre }}</h1>
+        <p class="emp-descripcion">{{ emprendimiento.descripcion }}</p>
+        <p class="emp-precio" *ngIf="emprendimiento.precio_desde">
+          Desde ${{ emprendimiento.precio_desde }} hasta ${{ emprendimiento.precio_hasta }}
+        </p>
+      </div>
+    </div>
+
+    <h2 class="productos-titulo">Productos</h2>
+
+    <div class="productos-grid" *ngIf="!cargando">
+      <div class="producto-card" *ngFor="let producto of productos">
+        <img [src]="producto.imagen || 'assets/default.png'" [alt]="producto.nombre">
+        <div class="producto-info">
+          <h3>{{ producto.nombre }}</h3>
+          <p class="producto-desc">{{ producto.descripcion }}</p>
+          <span class="producto-precio">${{ producto.precio }}</span>
+
+          <button
+            *ngIf="isLoggedIn"
+            class="btn-agregar"
+            (click)="agregarAlCarrito(producto)"
+            [disabled]="agregandoId === producto.id">
+            <ion-icon name="cart-outline"></ion-icon>
+            {{ agregandoId === producto.id ? 'Agregando...' : 'Agregar al carrito' }}
+          </button>
+
+          <button *ngIf="!isLoggedIn" class="btn-agregar btn-secundario" (click)="irALogin()">
+            Inicia sesión para apartar
+          </button>
+        </div>
+      </div>
+
+      <div class="no-productos" *ngIf="productos.length === 0">
+        <p>Este emprendimiento aún no tiene productos disponibles</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="no-encontrado" *ngIf="!emprendimiento && !cargando">
+    <p>Emprendimiento no encontrado</p>
+    <button (click)="volver()">Volver</button>
+  </div>
+
+</ion-content>

@@ -90,11 +90,15 @@
 
       <!-- Grid de emprendimientos -->
       <div [class]="vistaGrid ? 'emp-grid' : 'emp-list'">
-        <div class="emp-card" *ngFor="let emp of emprendimientosFiltrados">
+        <div
+          class="emp-card"
+          *ngFor="let emp of emprendimientosFiltrados"
+          [routerLink]="['/emprendimientos', emp.id]"
+          style="cursor: pointer;">
           <img [src]="emp.imagen || 'assets/default.png'" [alt]="emp.nombre">
           <div class="emp-info">
             <h3>{{ emp.nombre }}</h3>
-            <p class="categoria">{{ emp.categoria }}</p>
+            <p class="categoria">{{ emp.categoria?.nombre }}</p>
             <p class="descripcion">{{ emp.descripcion }}</p>
           </div>
         </div>

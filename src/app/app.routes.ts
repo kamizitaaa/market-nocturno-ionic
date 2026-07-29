@@ -42,6 +42,16 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/emprendimientos/emprendimientos.page').then(m => m.EmprendimientosPage)
   },
   {
+  path: 'carrito',
+  loadComponent: () => import('./pages/carrito/carrito.page').then(m => m.CarritoPage),
+  canActivate: [authGuard]
+  },
+  {
+  path: 'mis-pedidos',
+  loadComponent: () => import('./pages/mis-pedidos/mis-pedidos.page').then(m => m.MisPedidosPage),
+  canActivate: [authGuard]
+  },
+  {
     path: 'acerca',
     loadComponent: () => import('./pages/acerca/acerca.page').then(m => m.AcercaPage)
   },
@@ -53,6 +63,10 @@ export const routes: Routes = [
     path: 'mi-emprendimiento',
     loadComponent: () => import('./pages/mi-emprendimiento/mi-emprendimiento.page').then(m => m.MiEmprendimientoPage),
     canActivate: [authGuard]
+  },
+  {
+  path: 'emprendimientos/:id',
+  loadComponent: () => import('./pages/emprendimiento-detalle/emprendimiento-detalle.page').then(m => m.EmprendimientoDetallePage)
   },
   {
     path: 'convocatorias',
