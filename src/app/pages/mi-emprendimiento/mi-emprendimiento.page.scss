@@ -3,7 +3,7 @@
 }
 
 .mi-emp-container {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 30px 20px;
   color: #fff;
@@ -14,128 +14,108 @@
   align-items: center;
   gap: 10px;
   font-size: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 
   ion-icon {
     color: #ffa500;
   }
 }
 
-.sub-pedido-card {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-}
-
-.sub-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #333;
-}
-
-.sub-cliente {
-  font-weight: bold;
-  color: #fff;
-}
-
-.sub-estado {
-  font-size: 12px;
-  font-weight: bold;
-  padding: 4px 10px;
-  border-radius: 12px;
-  text-transform: uppercase;
-
-  &.estado-pendiente {
-    background: rgba(255, 165, 0, 0.15);
-    color: #ffa500;
-  }
-  &.estado-listo_para_entregar {
-    background: rgba(0, 200, 150, 0.15);
-    color: #00c896;
-  }
-  &.estado-entregado {
-    background: rgba(100, 100, 255, 0.15);
-    color: #7a7aff;
-  }
-  &.estado-cancelado {
-    background: rgba(255, 60, 60, 0.15);
-    color: #ff5c5c;
-  }
-}
-
-.sub-item {
-  display: flex;
-  justify-content: space-between;
+.mi-emp-subtitulo {
+  color: #999;
   font-size: 14px;
-  color: #ccc;
-  margin-bottom: 6px;
+  margin-bottom: 24px;
 }
 
-.sub-footer {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid #333;
+.form-card {
+  background: #1a1a1a;
+  border: 2px solid #ffa500;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.form-group {
+  margin-bottom: 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    color: #ffa500;
+    font-weight: bold;
+  }
+
+  input, select, textarea {
+    background: #000;
+    border: 1.5px solid #ffa500;
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+
+    &::placeholder {
+      color: #555;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+  }
 }
 
-.sub-total {
-  font-weight: bold;
-  color: #ffa500;
-}
-
-.sub-acciones {
+.form-row {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 14px;
+
+  .form-group {
+    flex: 1;
+  }
 }
 
-.btn-accion {
+.btn-guardar {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 6px;
-  border-radius: 16px;
-  padding: 6px 14px;
-  font-size: 13px;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ffa500, #ff6b00);
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  padding: 14px;
+  font-weight: bold;
+  font-size: 15px;
   cursor: pointer;
-  border: 1px solid;
-  background: none;
+  margin-top: 8px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .preview-imagen {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.btn-subir-imagen {
+  margin-top: 8px;
+  background: transparent;
+  border: 1.5px solid #ffa500;
+  color: #ffa500;
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-}
-
-.btn-listo {
-  border-color: #00c896;
-  color: #00c896;
-}
-
-.btn-entregado {
-  border-color: #7a7aff;
-  color: #7a7aff;
-}
-
-.btn-cancelar {
-  border-color: #ff5c5c;
-  color: #ff5c5c;
-}
-
-.sin-pedidos {
-  text-align: center;
-  padding: 60px 20px;
-  color: #888;
-
-  ion-icon {
-    font-size: 48px;
-    margin-bottom: 12px;
-    color: #444;
   }
 }

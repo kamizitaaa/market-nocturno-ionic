@@ -1,102 +1,148 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import {
-  storefrontOutline, receiptOutline, timeOutline,
-  checkmarkCircleOutline, closeCircleOutline, banOutline
-} from 'ionicons/icons';
+import { storefrontOutline, saveOutline, addCircleOutline } from 'ionicons/icons';
 import { HeaderComponent } from '../../shared/headers/public-header/header.component';
-import { PedidoService } from '../../services/pedido';
-
-interface SubPedidoConCliente {
-  id: number;
-  emprendimiento_id: number;
-  estado: string;
-  pedido: {
-    id: number;
-    cliente: {
-      nombre: string;
-      apellido_paterno: string;
-    };
-  };
-  items: {
-    id: number;
-    cantidad: number;
-    precio_unitario: string;
-    producto: { nombre: string };
-  }[];
-  emprendimiento?: {
-    id: number;
-    nombre: string;
-  };
-}
+import { EmprendimientoService } from '../../services/emprendimiento';
+import { CategoriaService } from '../../services/categoria';
+import { Emprendimiento } from '../../models/emprendimiento.model';
 
 @Component({
   selector: 'app-mi-emprendimiento',
   templateUrl: './mi-emprendimiento.page.html',
   styleUrls: ['./mi-emprendimiento.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonContent, IonIcon, HeaderComponent]
+  imports: [CommonModule, FormsModule, IonContent, IonIcon, HeaderComponent]
 })
 export class MiEmprendimientoPage implements OnInit {
 
-  subPedidos: SubPedidoConCliente[] = [];
+  emprendimiento: Emprendimiento | null = null;
+  categorias: { id: number; nombre: string }[] = [];
   cargando = true;
-  actualizandoId: number | null = null;
+  guardando = false;
+  tieneEmprendimiento = false;
 
-  constructor(private pedidoService: PedidoService) {
-    addIcons({
-      storefrontOutline, receiptOutline, timeOutline,
-      checkmarkCircleOutline, closeCircleOutline, banOutline
-    });
+  archivoSeleccionado: File | null = null;
+  subiendoImagen = false;
+
+  form = {
+    categoria_id: null as number | null,
+    nombre: '',
+    descripcion: '',
+    precio_desde: null as number | null,
+    precio_hasta: null as number | null,
+  };
+
+  constructor(
+    private emprendimientoService: EmprendimientoService,
+    private categoriaService: CategoriaService
+  ) {
+    addIcons({ storefrontOutline, saveOutline, addCircleOutline });
   }
 
   ngOnInit() {
-    this.cargarPedidos();
+    this.cargarCategorias();
+    this.cargarMiEmprendimiento();
   }
 
-  cargarPedidos() {
-    this.cargando = true;
-    this.pedidoService.pedidosDeMiEmprendimiento().subscribe({
+  cargarCategorias() {
+    this.categoriaService.getAll().subscribe({
       next: (data) => {
-        this.subPedidos = data;
+        this.categorias = data;
+      },
+      error: () => {
+        this.categorias = [];
+      }
+    });
+  }
+
+  cargarMiEmprendimiento() {
+    this.cargando = true;
+    this.emprendimientoService.misEmprendimientos().subscribe({
+      next: (data) => {
+        if (data.length > 0) {
+          this.emprendimiento = data[0];
+          this.tieneEmprendimiento = true;
+          this.form = {
+            categoria_id: data[0].categoria_id,
+            nombre: data[0].nombre,
+            descripcion: data[0].descripcion,
+            precio_desde: data[0].precio_desde ? Number(data[0].precio_desde) : null,
+            precio_hasta: data[0].precio_hasta ? Number(data[0].precio_hasta) : null,
+          };
+        } else {
+          this.tieneEmprendimiento = false;
+        }
         this.cargando = false;
       },
       error: () => {
-        this.subPedidos = [];
+        this.tieneEmprendimiento = false;
         this.cargando = false;
       }
     });
   }
 
-  subtotal(sub: SubPedidoConCliente): number {
-    return sub.items.reduce(
-      (sum, item) => sum + (parseFloat(item.precio_unitario) * item.cantidad),
-      0
-    );
+  guardar() {
+    if (!this.form.nombre || !this.form.categoria_id) {
+      alert('Nombre y categoría son obligatorios');
+      return;
+    }
+
+    this.guardando = true;
+
+    if (this.tieneEmprendimiento && this.emprendimiento) {
+      this.emprendimientoService.update(this.emprendimiento.id, this.form as any).subscribe({
+        next: () => {
+          this.guardando = false;
+          alert('Emprendimiento actualizado correctamente');
+          this.cargarMiEmprendimiento();
+        },
+        error: () => {
+          this.guardando = false;
+          alert('No se pudo actualizar el emprendimiento');
+        }
+      });
+    } else {
+      this.emprendimientoService.create(this.form as any).subscribe({
+        next: () => {
+          this.guardando = false;
+          alert('Emprendimiento creado correctamente');
+          this.cargarMiEmprendimiento();
+        },
+        error: () => {
+          this.guardando = false;
+          alert('No se pudo crear el emprendimiento');
+        }
+      });
+    }
   }
 
-  etiquetaEstado(estado: string): string {
-    const mapa: Record<string, string> = {
-      pendiente: 'Pendiente',
-      listo_para_entregar: 'Listo para recoger',
-      entregado: 'Entregado',
-      cancelado: 'Cancelado'
-    };
-    return mapa[estado] || estado;
+  onArchivoSeleccionado(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.archivoSeleccionado = input.files[0];
+    }
   }
 
-  cambiarEstado(sub: SubPedidoConCliente, nuevoEstado: string) {
-    this.actualizandoId = sub.id;
-    this.pedidoService.actualizarEstadoSubPedido(sub.id, nuevoEstado).subscribe({
+  subirImagen() {
+    if (!this.archivoSeleccionado || !this.emprendimiento) {
+      alert('Selecciona una imagen primero');
+      return;
+    }
+
+    this.subiendoImagen = true;
+    this.emprendimientoService.subirImagen(this.emprendimiento.id, this.archivoSeleccionado).subscribe({
       next: () => {
-        sub.estado = nuevoEstado;
-        this.actualizandoId = null;
+        this.subiendoImagen = false;
+        this.archivoSeleccionado = null;
+        alert('Imagen actualizada correctamente');
+        this.cargarMiEmprendimiento();
       },
       error: () => {
-        this.actualizandoId = null;
-        alert('No se pudo actualizar el estado');
+        this.subiendoImagen = false;
+        alert('No se pudo subir la imagen');
       }
     });
   }

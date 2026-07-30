@@ -2,66 +2,67 @@
 
 <ion-content [fullscreen]="true" class="mi-emp-content">
 
-  <div class="mi-emp-container">
+  <div class="mi-emp-container" *ngIf="!cargando">
+
     <h1 class="mi-emp-titulo">
-      <ion-icon name="storefront-outline"></ion-icon>
-      Pedidos de mi Emprendimiento
+      <ion-icon [name]="tieneEmprendimiento ? 'storefront-outline' : 'add-circle-outline'"></ion-icon>
+      {{ tieneEmprendimiento ? 'Mi Emprendimiento' : 'Crea tu Emprendimiento' }}
     </h1>
 
-    <div class="sub-pedido-card" *ngFor="let sub of subPedidos">
+    <p class="mi-emp-subtitulo" *ngIf="!tieneEmprendimiento">
+      Aún no tienes un emprendimiento registrado. Completa el formulario para crear el tuyo.
+    </p>
 
-      <div class="sub-header">
-        <span class="sub-cliente">
-          Pedido de {{ sub.pedido.cliente.nombre }} {{ sub.pedido.cliente.apellido_paterno }}
-        </span>
-        <span class="sub-estado" [ngClass]="'estado-' + sub.estado">
-          {{ etiquetaEstado(sub.estado) }}
-        </span>
+    <div class="form-card">
+
+      <div class="form-group" *ngIf="tieneEmprendimiento">
+        <label>Imagen del negocio</label>
+        <img *ngIf="emprendimiento?.imagen" [src]="emprendimiento?.imagen" class="preview-imagen">
+        <input type="file" accept="image/*" (change)="onArchivoSeleccionado($event)">
+        <button
+          type="button"
+          class="btn-subir-imagen"
+          (click)="subirImagen()"
+          [disabled]="subiendoImagen || !archivoSeleccionado">
+          {{ subiendoImagen ? 'Subiendo...' : 'Subir imagen' }}
+        </button>
       </div>
 
-      <div class="sub-item" *ngFor="let item of sub.items">
-        <span>{{ item.producto.nombre }} x{{ item.cantidad }}</span>
-        <span>${{ item.precio_unitario }}</span>
+      <div class="form-group">
+        <label>Nombre del negocio</label>
+        <input type="text" [(ngModel)]="form.nombre" placeholder="Ej. Tacos El Buen Sabor">
       </div>
 
-      <div class="sub-footer">
-        <span class="sub-total">Total: ${{ subtotal(sub).toFixed(2) }}</span>
+      <div class="form-group">
+        <label>Categoría</label>
+        <select [(ngModel)]="form.categoria_id">
+          <option [ngValue]="null" disabled>Selecciona una categoría</option>
+          <option *ngFor="let cat of categorias" [ngValue]="cat.id">{{ cat.nombre }}</option>
+        </select>
+      </div>
 
-        <div class="sub-acciones" *ngIf="sub.estado !== 'entregado' && sub.estado !== 'cancelado'">
-          <button
-            *ngIf="sub.estado === 'pendiente'"
-            class="btn-accion btn-listo"
-            (click)="cambiarEstado(sub, 'listo_para_entregar')"
-            [disabled]="actualizandoId === sub.id">
-            <ion-icon name="time-outline"></ion-icon>
-            Marcar listo
-          </button>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="form.descripcion" rows="3" placeholder="Cuéntale a tus clientes sobre tu negocio"></textarea>
+      </div>
 
-          <button
-            *ngIf="sub.estado === 'listo_para_entregar'"
-            class="btn-accion btn-entregado"
-            (click)="cambiarEstado(sub, 'entregado')"
-            [disabled]="actualizandoId === sub.id">
-            <ion-icon name="checkmark-circle-outline"></ion-icon>
-            Marcar entregado
-          </button>
-
-          <button
-            class="btn-accion btn-cancelar"
-            (click)="cambiarEstado(sub, 'cancelado')"
-            [disabled]="actualizandoId === sub.id">
-            <ion-icon name="close-circle-outline"></ion-icon>
-            Cancelar
-          </button>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Precio desde</label>
+          <input type="number" [(ngModel)]="form.precio_desde" placeholder="30">
+        </div>
+        <div class="form-group">
+          <label>Precio hasta</label>
+          <input type="number" [(ngModel)]="form.precio_hasta" placeholder="80">
         </div>
       </div>
 
+      <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+        <ion-icon name="save-outline"></ion-icon>
+        {{ guardando ? 'Guardando...' : (tieneEmprendimiento ? 'Guardar cambios' : 'Crear emprendimiento') }}
+      </button>
     </div>
 
-    <div class="sin-pedidos" *ngIf="!cargando && subPedidos.length === 0">
-      <ion-icon name="receipt-outline"></ion-icon>
-      <p>Aún no tienes pedidos en tu emprendimiento</p>
-    </div>
   </div>
 
 </ion-content>

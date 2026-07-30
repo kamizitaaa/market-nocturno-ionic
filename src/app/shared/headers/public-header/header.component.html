@@ -1,16 +1,24 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <img src="assets/LogoMercadoNoctuno.png" height="60" alt="Market Nocturno" routerLink="/home" style="cursor:pointer">
+      <img src="assets/LogoMercadoNoctuno.png" height="60" alt="Market Nocturno" [routerLink]="rolUsuario === 'emprendedor' ? '/mi-emprendimiento' : '/home'" style="cursor:pointer">
     </ion-buttons>
-    <div class="nav-links">
+
+    <!-- Navegación pública: solo para quienes NO son emprendedores -->
+    <div class="nav-links" *ngIf="rolUsuario !== 'emprendedor'">
       <a routerLink="/home" class="nav-link" [class.active]="isActive('/home')">INICIO</a>
       <a routerLink="/emprendimientos" class="nav-link" [class.active]="isActive('/emprendimientos')">EMPRENDIMIENTOS</a>
       <a routerLink="/acerca" class="nav-link" [class.active]="isActive('/acerca')">ACERCA DE NOSOTROS</a>
       <a routerLink="/contacto" class="nav-link" [class.active]="isActive('/contacto')">CONTÁCTANOS</a>
       <a routerLink="/convocatorias" class="nav-link" [class.active]="isActive('/convocatorias')">CONVOCATORIAS</a>
-      <a *ngIf="rolUsuario === 'emprendedor'" routerLink="/mi-emprendimiento" class="nav-link" [class.active]="isActive('/mi-emprendimiento')">MI EMPRENDIMIENTO</a>
     </div>
+
+    <!-- Navegación exclusiva de emprendedor -->
+    <div class="nav-links" *ngIf="rolUsuario === 'emprendedor'">
+      <a routerLink="/mi-emprendimiento" class="nav-link" [class.active]="isActive('/mi-emprendimiento')">MI EMPRENDIMIENTO</a>
+      <a routerLink="/pedidos-emprendimiento" class="nav-link" [class.active]="isActive('/pedidos-emprendimiento')">PEDIDOS</a>
+    </div>
+
     <ion-buttons slot="end">
       <!-- Sin sesión -->
       <ng-container *ngIf="!isLoggedIn">
@@ -22,7 +30,7 @@
 
       <!-- Con sesión -->
       <ng-container *ngIf="isLoggedIn">
-        <ion-button (click)="verCarrito()">
+        <ion-button *ngIf="rolUsuario !== 'emprendedor'" (click)="verCarrito()">
           <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
         </ion-button>
 
@@ -33,23 +41,23 @@
         </ion-button>
 
         <ion-popover trigger="menu-usuario-trigger" [isOpen]="menuAbierto" (didDismiss)="menuAbierto = false">
-        <ng-template>
-          <ion-list>
-            <ion-item button routerLink="/perfil" (click)="menuAbierto = false">
-              <ion-icon name="person-outline" slot="start"></ion-icon>
-              Mi perfil
-            </ion-item>
-            <ion-item button routerLink="/mis-pedidos" (click)="menuAbierto = false">
-              <ion-icon name="receipt-outline" slot="start"></ion-icon>
-              Mis pedidos
-            </ion-item>
-            <ion-item button (click)="cerrarSesion(); menuAbierto = false">
-              <ion-icon name="log-out-outline" slot="start"></ion-icon>
-              Cerrar sesión
-            </ion-item>
-          </ion-list>
-        </ng-template>
-      </ion-popover>
+          <ng-template>
+            <ion-list>
+              <ion-item button routerLink="/perfil" (click)="menuAbierto = false">
+                <ion-icon name="person-outline" slot="start"></ion-icon>
+                Mi perfil
+              </ion-item>
+              <ion-item button *ngIf="rolUsuario !== 'emprendedor'" routerLink="/mis-pedidos" (click)="menuAbierto = false">
+                <ion-icon name="receipt-outline" slot="start"></ion-icon>
+                Mis pedidos
+              </ion-item>
+              <ion-item button (click)="cerrarSesion(); menuAbierto = false">
+                <ion-icon name="log-out-outline" slot="start"></ion-icon>
+                Cerrar sesión
+              </ion-item>
+            </ion-list>
+          </ng-template>
+        </ion-popover>
       </ng-container>
     </ion-buttons>
   </ion-toolbar>
