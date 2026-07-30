@@ -13,54 +13,128 @@
       Aún no tienes un emprendimiento registrado. Completa el formulario para crear el tuyo.
     </p>
 
-    <div class="form-card">
+    <div class="dos-columnas">
 
-      <div class="form-group" *ngIf="tieneEmprendimiento">
-        <label>Imagen del negocio</label>
-        <img *ngIf="emprendimiento?.imagen" [src]="emprendimiento?.imagen" class="preview-imagen">
-        <input type="file" accept="image/*" (change)="onArchivoSeleccionado($event)">
-        <button
-          type="button"
-          class="btn-subir-imagen"
-          (click)="subirImagen()"
-          [disabled]="subiendoImagen || !archivoSeleccionado">
-          {{ subiendoImagen ? 'Subiendo...' : 'Subir imagen' }}
+      <!-- Columna izquierda: datos del negocio -->
+      <div class="form-card">
+        <h2 class="card-titulo">Datos del negocio</h2>
+
+        <div class="form-group" *ngIf="tieneEmprendimiento">
+          <label>Imagen del negocio</label>
+          <img *ngIf="emprendimiento?.imagen" [src]="emprendimiento?.imagen" class="preview-imagen">
+          <input type="file" accept="image/*" (change)="onArchivoSeleccionado($event)">
+          <button
+            type="button"
+            class="btn-subir-imagen"
+            (click)="subirImagen()"
+            [disabled]="subiendoImagen || !archivoSeleccionado">
+            {{ subiendoImagen ? 'Subiendo...' : 'Subir imagen' }}
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre del negocio</label>
+          <input type="text" [(ngModel)]="form.nombre" placeholder="Ej. Tacos El Buen Sabor">
+        </div>
+
+        <div class="form-group">
+          <label>Categoría</label>
+          <select [(ngModel)]="form.categoria_id">
+            <option [ngValue]="null" disabled>Selecciona una categoría</option>
+            <option *ngFor="let cat of categorias" [ngValue]="cat.id">{{ cat.nombre }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="form.descripcion" rows="3" placeholder="Cuéntale a tus clientes sobre tu negocio"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Precio desde</label>
+            <input type="number" [(ngModel)]="form.precio_desde" placeholder="30">
+          </div>
+          <div class="form-group">
+            <label>Precio hasta</label>
+            <input type="number" [(ngModel)]="form.precio_hasta" placeholder="80">
+          </div>
+        </div>
+
+        <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
+          <ion-icon name="save-outline"></ion-icon>
+          {{ guardando ? 'Guardando...' : (tieneEmprendimiento ? 'Guardar cambios' : 'Crear emprendimiento') }}
         </button>
       </div>
 
-      <div class="form-group">
-        <label>Nombre del negocio</label>
-        <input type="text" [(ngModel)]="form.nombre" placeholder="Ej. Tacos El Buen Sabor">
-      </div>
+      <!-- Columna derecha: productos -->
+      <div class="form-card" *ngIf="tieneEmprendimiento">
+        <h2 class="card-titulo">
+          <ion-icon name="fast-food-outline"></ion-icon>
+          Mis Productos
+        </h2>
 
-      <div class="form-group">
-        <label>Categoría</label>
-        <select [(ngModel)]="form.categoria_id">
-          <option [ngValue]="null" disabled>Selecciona una categoría</option>
-          <option *ngFor="let cat of categorias" [ngValue]="cat.id">{{ cat.nombre }}</option>
-        </select>
-      </div>
+        <!-- Formulario agregar/editar producto -->
+        <div class="producto-form">
+          <div class="form-group">
+            <label>Nombre del producto</label>
+            <input type="text" [(ngModel)]="formProducto.nombre" placeholder="Ej. Taco al Pastor">
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <input type="text" [(ngModel)]="formProducto.descripcion" placeholder="Ej. Con piña y cilantro">
+          </div>
+          <div class="form-group">
+            <label>Precio</label>
+            <input type="number" [(ngModel)]="formProducto.precio" placeholder="15">
+          </div>
 
-      <div class="form-group">
-        <label>Descripción</label>
-        <textarea [(ngModel)]="form.descripcion" rows="3" placeholder="Cuéntale a tus clientes sobre tu negocio"></textarea>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Precio desde</label>
-          <input type="number" [(ngModel)]="form.precio_desde" placeholder="30">
+          <div class="producto-form-botones">
+            <button class="btn-guardar-producto" (click)="guardarProducto()" [disabled]="guardandoProducto">
+              {{ guardandoProducto ? 'Guardando...' : (editandoProductoId ? 'Guardar cambios' : '+ Agregar producto') }}
+            </button>
+            <button *ngIf="editandoProductoId" class="btn-cancelar-edicion" (click)="cancelarEdicion()">
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Precio hasta</label>
-          <input type="number" [(ngModel)]="form.precio_hasta" placeholder="80">
+
+        <!-- Lista de productos -->
+        <div class="productos-lista" *ngIf="!cargandoProductos">
+          <div class="producto-item" *ngFor="let producto of productos">
+            <img *ngIf="producto.imagen" [src]="producto.imagen" class="producto-imagen-preview">
+            <div class="producto-info">
+              <h4>{{ producto.nombre }}</h4>
+              <p>{{ producto.descripcion }}</p>
+              <span class="producto-precio">${{ producto.precio }}</span>
+
+              <div class="producto-imagen-uploader">
+                <input type="file" accept="image/*" (change)="onArchivoProductoSeleccionado($event)">
+                <button
+                  type="button"
+                  class="btn-subir-imagen-producto"
+                  (click)="subirImagenProducto(producto)"
+                  [disabled]="subiendoImagenProducto === producto.id">
+                  {{ subiendoImagenProducto === producto.id ? 'Subiendo...' : 'Subir imagen' }}
+                </button>
+              </div>
+            </div>
+            <div class="producto-acciones">
+              <button (click)="editarProducto(producto)">
+                <ion-icon name="create-outline"></ion-icon>
+              </button>
+              <button (click)="eliminarProducto(producto)" class="btn-eliminar-producto">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="sin-productos" *ngIf="productos.length === 0">
+            <p>Aún no tienes productos. Agrega el primero arriba.</p>
+          </div>
         </div>
       </div>
 
-      <button class="btn-guardar" (click)="guardar()" [disabled]="guardando">
-        <ion-icon name="save-outline"></ion-icon>
-        {{ guardando ? 'Guardando...' : (tieneEmprendimiento ? 'Guardar cambios' : 'Crear emprendimiento') }}
-      </button>
     </div>
 
   </div>

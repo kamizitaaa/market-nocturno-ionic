@@ -3,11 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { storefrontOutline, saveOutline, addCircleOutline } from 'ionicons/icons';
+import {
+  storefrontOutline, saveOutline, addCircleOutline,
+  fastFoodOutline, createOutline, trashOutline, closeOutline
+} from 'ionicons/icons';
 import { HeaderComponent } from '../../shared/headers/public-header/header.component';
 import { EmprendimientoService } from '../../services/emprendimiento';
 import { CategoriaService } from '../../services/categoria';
+import { ProductoService } from '../../services/producto';
 import { Emprendimiento } from '../../models/emprendimiento.model';
+import { Producto } from '../../models/producto.model';
 
 @Component({
   selector: 'app-mi-emprendimiento',
@@ -35,11 +40,29 @@ export class MiEmprendimientoPage implements OnInit {
     precio_hasta: null as number | null,
   };
 
+  // --- Productos --- Propiedades
+  productos: Producto[] = [];
+  cargandoProductos = false;
+  guardandoProducto = false;
+  editandoProductoId: number | null = null;
+  archivoProductoSeleccionado: File | null = null;
+  subiendoImagenProducto: number | null = null; // guarda el id del producto que se está subiendo
+
+  formProducto = {
+    nombre: '',
+    descripcion: '',
+    precio: null as number | null,
+  };
+
   constructor(
     private emprendimientoService: EmprendimientoService,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private productoService: ProductoService
   ) {
-    addIcons({ storefrontOutline, saveOutline, addCircleOutline });
+    addIcons({
+      storefrontOutline, saveOutline, addCircleOutline,
+      fastFoodOutline, createOutline, trashOutline, closeOutline
+    });
   }
 
   ngOnInit() {
@@ -49,12 +72,8 @@ export class MiEmprendimientoPage implements OnInit {
 
   cargarCategorias() {
     this.categoriaService.getAll().subscribe({
-      next: (data) => {
-        this.categorias = data;
-      },
-      error: () => {
-        this.categorias = [];
-      }
+      next: (data) => { this.categorias = data; },
+      error: () => { this.categorias = []; }
     });
   }
 
@@ -72,6 +91,7 @@ export class MiEmprendimientoPage implements OnInit {
             precio_desde: data[0].precio_desde ? Number(data[0].precio_desde) : null,
             precio_hasta: data[0].precio_hasta ? Number(data[0].precio_hasta) : null,
           };
+          this.cargarProductos();
         } else {
           this.tieneEmprendimiento = false;
         }
@@ -145,5 +165,117 @@ export class MiEmprendimientoPage implements OnInit {
         alert('No se pudo subir la imagen');
       }
     });
+  }
+
+  // --- Métodos de productos ---
+
+  cargarProductos() {
+    if (!this.emprendimiento) return;
+    this.cargandoProductos = true;
+    this.productoService.getAll(this.emprendimiento.id).subscribe({
+      next: (data) => {
+        this.productos = data;
+        this.cargandoProductos = false;
+      },
+      error: () => {
+        this.productos = [];
+        this.cargandoProductos = false;
+      }
+    });
+  }
+
+  editarProducto(producto: Producto) {
+    this.editandoProductoId = producto.id;
+    this.formProducto = {
+      nombre: producto.nombre,
+      descripcion: producto.descripcion,
+      precio: Number(producto.precio),
+    };
+  }
+
+  cancelarEdicion() {
+    this.editandoProductoId = null;
+    this.formProducto = { nombre: '', descripcion: '', precio: null };
+  }
+
+  guardarProducto() {
+    if (!this.formProducto.nombre || !this.formProducto.precio) {
+      alert('Nombre y precio son obligatorios');
+      return;
+    }
+
+    if (!this.emprendimiento) return;
+
+    this.guardandoProducto = true;
+
+    if (this.editandoProductoId) {
+      this.productoService.update(this.editandoProductoId, this.formProducto as any).subscribe({
+        next: () => {
+          this.guardandoProducto = false;
+          this.cancelarEdicion();
+          this.cargarProductos();
+        },
+        error: () => {
+          this.guardandoProducto = false;
+          alert('No se pudo actualizar el producto');
+        }
+      });
+    } else {
+      const nuevoProducto = {
+        emprendimiento_id: this.emprendimiento.id,
+        ...this.formProducto
+      };
+      this.productoService.create(nuevoProducto as any).subscribe({
+        next: () => {
+          this.guardandoProducto = false;
+          this.cancelarEdicion();
+          this.cargarProductos();
+        },
+        error: () => {
+          this.guardandoProducto = false;
+          alert('No se pudo crear el producto');
+        }
+      });
+    }
+  }
+
+  eliminarProducto(producto: Producto) {
+    if (!confirm(`¿Eliminar "${producto.nombre}"?`)) return;
+
+    this.productoService.delete(producto.id).subscribe({
+      next: () => {
+        this.cargarProductos();
+      },
+      error: () => {
+        alert('No se pudo eliminar el producto');
+      }
+    });
+  }
+
+  onArchivoProductoSeleccionado(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    this.archivoProductoSeleccionado = input.files[0];
+  }
+}
+
+subirImagenProducto(producto: Producto) {
+  if (!this.archivoProductoSeleccionado) {
+    alert('Selecciona una imagen primero');
+    return;
+  }
+
+  this.subiendoImagenProducto = producto.id;
+  this.productoService.subirImagen(producto.id, this.archivoProductoSeleccionado).subscribe({
+    next: () => {
+      this.subiendoImagenProducto = null;
+      this.archivoProductoSeleccionado = null;
+      this.cargarProductos();
+    },
+    error: () => {
+      this.subiendoImagenProducto = null;
+      alert('No se pudo subir la imagen del producto');
+    }
+  });
   }
 }
