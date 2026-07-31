@@ -6,6 +6,7 @@ import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { HeaderComponent } from '../../shared/headers/public-header/header.component';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-registro',
@@ -29,8 +30,12 @@ export class RegistroPage {
   confirmarPassword = '';
   mostrarPassword = false;
   mostrarConfirm = false;
+  registrando = false;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {
     addIcons({ eyeOutline, eyeOffOutline });
   }
 
@@ -58,17 +63,31 @@ export class RegistroPage {
       return;
     }
 
-    // Aquí irá la llamada al backend Laravel
-    console.log('Registrando usuario...', {
-      nombre: this.nombre,
-      telefono: this.telefono,
-      apellidoPaterno: this.apellidoPaterno,
-      apellidoMaterno: this.apellidoMaterno,
-      email: this.email,
-      password: this.password
-    });
+    this.registrando = true;
 
-    alert('Cuenta creada exitosamente');
-    this.router.navigate(['/login']);
+    this.authService.registro({
+      nombre: this.nombre,
+      apellido_paterno: this.apellidoPaterno,
+      apellido_materno: this.apellidoMaterno,
+      telefono: this.telefono,
+      email: this.email,
+      password: this.password,
+      password_confirmation: this.confirmarPassword
+    } as any).subscribe({
+      next: () => {
+        this.registrando = false;
+        alert('Cuenta creada exitosamente');
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        this.registrando = false;
+        if (err.status === 422 && err.error?.errors) {
+          const mensajes = ([] as string[]).concat(...Object.values(err.error.errors) as string[][]).join('\n');
+          alert(mensajes);
+        } else {
+          alert('No se pudo crear la cuenta, intenta de nuevo');
+        }
+      }
+    });
   }
 }

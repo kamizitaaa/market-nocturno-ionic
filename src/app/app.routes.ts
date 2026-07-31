@@ -1,19 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role-guard';
-import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { provideHttpClient } from '@angular/common/http';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  standalone: true,
-  imports: [IonApp, IonRouterOutlet],
-})
-export class AppComponent {
-  constructor() {}
-}
 
 export const routes: Routes = [
   {
@@ -30,8 +17,8 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.page').then(m => m.LoginPage)
   },
   {
-  path: 'verificar-mfa',
-  loadComponent: () => import('./pages/verificar-mfa/verificar-mfa.page').then(m => m.VerificarMfaPage)
+    path: 'verificar-mfa',
+    loadComponent: () => import('./pages/verificar-mfa/verificar-mfa.page').then(m => m.VerificarMfaPage)
   },
   {
     path: 'registro',
@@ -42,14 +29,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/emprendimientos/emprendimientos.page').then(m => m.EmprendimientosPage)
   },
   {
-  path: 'carrito',
-  loadComponent: () => import('./pages/carrito/carrito.page').then(m => m.CarritoPage),
-  canActivate: [authGuard]
+    path: 'carrito',
+    loadComponent: () => import('./pages/carrito/carrito.page').then(m => m.CarritoPage),
+    canActivate: [authGuard]
   },
   {
-  path: 'mis-pedidos',
-  loadComponent: () => import('./pages/mis-pedidos/mis-pedidos.page').then(m => m.MisPedidosPage),
-  canActivate: [authGuard]
+    path: 'mis-pedidos',
+    loadComponent: () => import('./pages/mis-pedidos/mis-pedidos.page').then(m => m.MisPedidosPage),
+    canActivate: [authGuard]
   },
   {
     path: 'acerca',
@@ -65,17 +52,17 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-  path: 'pedidos-emprendimiento',
-  loadComponent: () => import('./pages/pedidos-emprendimiento/pedidos-emprendimiento.page').then(m => m.PedidosEmprendimientoPage),
-  canActivate: [authGuard]
+    path: 'pedidos-emprendimiento',
+    loadComponent: () => import('./pages/pedidos-emprendimiento/pedidos-emprendimiento.page').then(m => m.PedidosEmprendimientoPage),
+    canActivate: [authGuard]
   },
   {
-  path: 'emprendimientos/:id',
-  loadComponent: () => import('./pages/emprendimiento-detalle/emprendimiento-detalle.page').then(m => m.EmprendimientoDetallePage)
+    path: 'emprendimientos/:id',
+    loadComponent: () => import('./pages/emprendimiento-detalle/emprendimiento-detalle.page').then(m => m.EmprendimientoDetallePage)
   },
   {
     path: 'convocatorias',
-    loadComponent: () => import('./pages/convocatorias/convocatorias.page').then( m => m.ConvocatoriasPage)
+    loadComponent: () => import('./pages/convocatorias/convocatorias.page').then(m => m.ConvocatoriasPage)
   },
   {
     path: 'perfil',
@@ -98,12 +85,13 @@ export const routes: Routes = [
         path: 'convocatorias',
         loadComponent: () => import('./pages/admin/convocatorias/convocatorias.page').then(m => m.ConvocatoriasPage)
       },
-      { path: 'acerca', 
-        loadComponent: () => import('./pages/admin/acerca/acerca.page').then(m => m.AcercaPage) 
+      {
+        path: 'acerca',
+        loadComponent: () => import('./pages/admin/acerca/acerca.page').then(m => m.AcercaPage)
       },
       {
-    path: 'contacto',
-    loadComponent: () => import('./pages/admin/contacto/contacto.page').then( m => m.ContactoPage)
+        path: 'contacto',
+        loadComponent: () => import('./pages/admin/contacto/contacto.page').then(m => m.ContactoPage)
       },
     ]
   },
