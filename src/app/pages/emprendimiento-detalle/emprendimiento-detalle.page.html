@@ -34,14 +34,24 @@
           <p class="producto-desc">{{ producto.descripcion }}</p>
           <span class="producto-precio">${{ producto.precio }}</span>
 
-          <button
-            *ngIf="isLoggedIn"
-            class="btn-agregar"
-            (click)="agregarAlCarrito(producto)"
-            [disabled]="agregandoId === producto.id">
-            <ion-icon name="cart-outline"></ion-icon>
-            {{ agregandoId === producto.id ? 'Agregando...' : 'Agregar al carrito' }}
+          <div class="cantidad-selector" *ngIf="isLoggedIn">
+          <button (click)="cambiarCantidad(producto.id, -1)" [disabled]="agregandoId === producto.id">
+            <ion-icon name="remove-outline"></ion-icon>
           </button>
+          <span>{{ getCantidad(producto.id) }}</span>
+          <button (click)="cambiarCantidad(producto.id, 1)" [disabled]="agregandoId === producto.id">
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+        </div>
+
+        <button
+          *ngIf="isLoggedIn"
+          class="btn-agregar"
+          (click)="agregarAlCarrito(producto)"
+          [disabled]="agregandoId === producto.id">
+          <ion-icon name="cart-outline"></ion-icon>
+          {{ agregandoId === producto.id ? 'Agregando...' : 'Agregar al carrito' }}
+        </button>
 
           <button *ngIf="!isLoggedIn" class="btn-agregar btn-secundario" (click)="irALogin()">
             Inicia sesión para apartar

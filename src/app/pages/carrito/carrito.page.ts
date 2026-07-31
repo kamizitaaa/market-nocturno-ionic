@@ -123,6 +123,9 @@ export class CarritoPage implements OnInit {
   }
 
   eliminarItem(item: CarritoItem) {
+  const confirmar = confirm(`¿Seguro que quieres eliminar "${item.producto.nombre}" del carrito?`);
+  if (!confirmar) return;
+
     this.carritoService.eliminarItem(item.id).subscribe({
       next: () => {
         this.cargarCarrito();

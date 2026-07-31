@@ -12,6 +12,7 @@ import {
   chevronDownOutline, chevronUpOutline, logOutOutline, receiptOutline
 } from 'ionicons/icons';
 import { AuthService } from '../../../services/auth';
+import { CarritoService } from '../../../services/carrito';
 
 @Component({
   selector: 'app-header',
@@ -30,9 +31,11 @@ export class HeaderComponent implements OnInit {
   nombreUsuario = '';
   rolUsuario = '';
   menuAbierto = false;
+  cantidadCarrito = 0;
 
   constructor(
     private authService: AuthService,
+    private carritoService: CarritoService,
     private router: Router
   ) {
     addIcons({
@@ -43,6 +46,11 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.checkAuth();
+
+    // Se suscribe una sola vez: cada vez que el contador cambia en cualquier parte de la app, se actualiza aquí
+    this.carritoService.cantidad$.subscribe(cantidad => {
+      this.cantidadCarrito = cantidad;
+    });
 
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
@@ -56,9 +64,15 @@ export class HeaderComponent implements OnInit {
     if (this.isLoggedIn) {
       this.nombreUsuario = await this.authService.getNombre() || 'Usuario';
       this.rolUsuario = await this.authService.getRol() || '';
+
+      // Solo carga el contador si el usuario puede tener carrito (no aplica a emprendedores)
+      if (this.rolUsuario !== 'emprendedor') {
+        this.carritoService.refrescarContador();
+      }
     } else {
       this.nombreUsuario = '';
       this.rolUsuario = '';
+      this.carritoService.resetContador();
     }
   }
 
@@ -83,6 +97,7 @@ export class HeaderComponent implements OnInit {
     this.isLoggedIn = false;
     this.nombreUsuario = '';
     this.rolUsuario = '';
+    this.carritoService.resetContador();
     this.router.navigate(['/login']);
   }
 }
