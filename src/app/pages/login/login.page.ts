@@ -37,6 +37,8 @@ export class LoginPage implements OnInit {
   cargandoCaptcha = false;
   mostrarCaptcha = true; // arranca visible
 
+  cargando = false;
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -87,11 +89,15 @@ export class LoginPage implements OnInit {
       return;
     }
 
+    this.cargando = true;
+
     this.authService.login(this.email, this.password, this.captchaToken, this.captchaRespuesta).subscribe({
       next: (res) => {
+        this.cargando = false;
         this.router.navigate(['/verificar-mfa'], { state: { userId: res.user_id } });
       },
       error: () => {
+        this.cargando = false;
         alert('Credenciales incorrectas o captcha inválido');
         this.cargarCaptcha();
       }

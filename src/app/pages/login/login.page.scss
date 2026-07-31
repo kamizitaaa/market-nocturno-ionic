@@ -203,10 +203,21 @@ ion-content {
   cursor: pointer;
   transition: all 0.3s;
   letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   &:hover {
     transform: scale(1.02);
     box-shadow: 0 5px 20px rgba(255, 165, 0, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 }
 
@@ -280,4 +291,13 @@ footer {
       transform: scale(1.2);
     }
   }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

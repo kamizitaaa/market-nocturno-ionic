@@ -49,7 +49,10 @@
         <a class="forgot">¿Olvidaste tu contraseña?</a>
       </div>
 
-      <button class="btn-login" (click)="login()">→ Iniciar Sesión</button>
+      <button class="btn-login" (click)="login()" [disabled]="cargando">
+      <ion-icon *ngIf="cargando" name="refresh-outline" class="spin"></ion-icon>
+      {{ cargando ? 'Cargando...' : '→ Iniciar Sesión' }}
+      </button>
 
       <p class="register-link">
         ¿No tienes una cuenta? <a routerLink="/registro">¡Regístrate!</a>
