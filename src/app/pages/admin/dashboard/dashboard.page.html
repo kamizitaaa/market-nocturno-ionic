@@ -44,10 +44,10 @@
 
       <div class="right-section">
         <div class="admin-btns-row">
-          <button class="btn-nueva">
-            <ion-icon name="person-outline"></ion-icon>
-            Nuevo Emprendedor
-          </button>
+          <button class="btn-nueva" (click)="abrirModalNuevo()">
+          <ion-icon name="person-outline"></ion-icon>
+          Nuevo Emprendedor
+        </button>
         </div>
         <div class="busqueda-row">
           <div class="busqueda-input">
@@ -80,21 +80,28 @@
               </thead>
               <tbody>
                 <tr *ngFor="let emp of emprendedoresFiltrados">
-                  <td>{{ emp.id }}</td>
-                  <td>{{ emp.nombre }}</td>
-                  <td>{{ emp.email }}</td>
-                  <td>{{ emp.telefono }}</td>
-                  <td>{{ emp.registro }}</td>
-                  <td><span [class]="'badge ' + (emp.mfa ? 'activo' : 'inactivo')">{{ emp.mfa ? 'Sí' : 'No' }}</span></td>
-                  <td class="acciones">
-                    <button class="btn-editar">
-                      <ion-icon name="create-outline"></ion-icon>
-                    </button>
-                    <button class="btn-eliminar">
-                      <ion-icon name="trash-outline"></ion-icon>
-                    </button>
-                  </td>
-                </tr>
+                <td>{{ emp.id }}</td>
+                <td>{{ nombreCompleto(emp) }}</td>
+                <td>{{ emp.email }}</td>
+                <td>{{ emp.telefono }}</td>
+                <td>{{ emp.created_at | date:'yyyy-MM-dd' }}</td>
+                <td>
+                  <span
+                    [class]="'badge badge-clickable ' + (emp.mfa_enabled ? 'activo' : 'inactivo')"
+                    (click)="toggleMfa(emp)"
+                    title="Click para activar/desactivar MFA">
+                    {{ emp.mfa_enabled ? 'Sí' : 'No' }}
+                  </span>
+                </td>
+                <td class="acciones">
+                  <button class="btn-editar" (click)="abrirModalEditar(emp)">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+                  <button class="btn-eliminar" (click)="eliminarEmprendedor(emp)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </td>
+              </tr>
                 <tr *ngIf="emprendedoresFiltrados.length === 0">
                   <td colspan="7" class="sin-datos">No hay emprendedores registrados</td>
                 </tr>
@@ -108,5 +115,68 @@
 
   </div>
 
+  <!-- Modal Nuevo/Editar Emprendedor -->
+<div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ modoEdicion ? 'Editar Emprendedor' : 'Nuevo Emprendedor' }}</h2>
+      <button class="btn-cerrar" (click)="cerrarModal()">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="form.nombre" placeholder="Nombre">
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" [(ngModel)]="form.telefono" placeholder="449 000 0000">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Apellido paterno</label>
+          <input type="text" [(ngModel)]="form.apellido_paterno" placeholder="Apellido paterno">
+        </div>
+        <div class="form-group">
+          <label>Apellido materno</label>
+          <input type="text" [(ngModel)]="form.apellido_materno" placeholder="Apellido materno">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" [(ngModel)]="form.email" placeholder="correo@ejemplo.com">
+      </div>
+
+      <div class="form-group" *ngIf="!modoEdicion">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="form.password" placeholder="Mínimo 8 caracteres">
+      </div>
+
+      <!-- Solo superadmin puede elegir el tipo de cuenta; el admin siempre crea emprendedores -->
+      <div class="form-group" *ngIf="!modoEdicion && rolActual === 'superadmin'">
+        <label>Tipo de cuenta</label>
+        <select [(ngModel)]="form.role">
+          <option value="emprendedor">Emprendedor</option>
+          <option value="admin">Admin</option>
+          <option value="superadmin">Superadmin</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-guardar-modal" (click)="guardar()" [disabled]="guardando">
+        <ion-icon name="save-outline"></ion-icon>
+        {{ guardando ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </div>
+</div>
   
 </ion-content>

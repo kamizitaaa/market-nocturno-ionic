@@ -92,9 +92,26 @@ export class LoginPage implements OnInit {
     this.cargando = true;
 
     this.authService.login(this.email, this.password, this.captchaToken, this.captchaRespuesta).subscribe({
-      next: (res) => {
+      next: async (res) => {
         this.cargando = false;
-        this.router.navigate(['/verificar-mfa'], { state: { userId: res.user_id } });
+
+        if (res.mfa_requerido === false) {
+          // Login directo, sin MFA
+          await this.authService.setToken(res.token);
+
+          const rol = res.user?.role;
+          if (rol) await this.authService.setRol(rol);
+          if (res.user?.nombre) await this.authService.setNombre(res.user.nombre);
+
+          if (rol === 'admin' || rol === 'superadmin') {
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            this.router.navigate(['/home']);
+          }
+        } else {
+          // Flujo normal con MFA
+          this.router.navigate(['/verificar-mfa'], { state: { userId: res.user_id } });
+        }
       },
       error: () => {
         this.cargando = false;
