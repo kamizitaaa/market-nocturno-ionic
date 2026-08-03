@@ -20,6 +20,7 @@ export interface Emprendimiento {
   precio_desde: string | null;
   precio_hasta: string | null;
   estado: 'activo' | 'inactivo';
+  destacado: boolean;
   descripcion: string;
   imagen?: string | null;
   fecha?: string;

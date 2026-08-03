@@ -40,4 +40,8 @@ export class EmprendimientoService {
   formData.append('imagen', archivo);
   return this.http.post(`${this.apiUrl}/emprendimientos/${id}/imagen`, formData);
   }
+
+  getAllAdmin(): Observable<Emprendimiento[]> {
+  return this.http.get<Emprendimiento[]>(`${this.apiUrl}/admin/emprendimientos`);
+  }
 }

@@ -19,4 +19,20 @@ export class CategoriaService {
   getAll(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(`${this.apiUrl}/categorias`);
   }
+
+  getById(id: number): Observable<Categoria> {
+    return this.http.get<Categoria>(`${this.apiUrl}/categorias/${id}`);
+  }
+
+  create(categoria: { nombre: string; activa?: boolean }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/categorias`, categoria);
+  }
+
+  update(id: number, categoria: { nombre?: string; activa?: boolean }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/categorias/${id}`, categoria);
+  }
+
+  delete(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/categorias/${id}`);
+  }
 }

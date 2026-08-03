@@ -3,15 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
+import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   peopleOutline, pulseOutline, addCircleOutline, starOutline,
   searchOutline, downloadOutline, createOutline, trashOutline,
-  personOutline, refreshOutline, closeOutline, saveOutline
+  personOutline, refreshOutline, closeOutline, saveOutline,
+  pricetagOutline, checkmarkOutline, addOutline,
+  briefcaseOutline, personAddOutline, peopleCircleOutline, megaphoneOutline
 } from 'ionicons/icons';
 import { AdminHeaderComponent } from '../../../shared/headers/admin-header/admin-header.component';
 import { AdminService, Stats, Emprendedor } from '../../../services/admin';
 import { AuthService } from '../../../services/auth';
+import { CategoriaService, Categoria } from '../../../services/categoria';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,22 +28,27 @@ import { AuthService } from '../../../services/auth';
     AdminHeaderComponent
   ]
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, ViewWillEnter {
 
   textoBusqueda = '';
   cargando = true;
   rolActual = '';
+  cargandoRecarga = false;
 
   stats: Stats = {
     total: 0,
     activos: 0,
     nuevos: 0,
-    destacados: 0
+    destacados: 0,
+    total_emprendedores: 0,
+    nuevos_emprendedores: 0,
+    total_clientes: 0,
+    convocatorias_activas: 0
   };
 
   emprendedores: Emprendedor[] = [];
 
-  // Modal
+  // Modal emprendedor
   modalAbierto = false;
   modoEdicion = false;
   guardando = false;
@@ -55,19 +64,36 @@ export class DashboardPage implements OnInit {
     role: 'emprendedor'
   };
 
+  // Modal categorías
+  modalCategoriasAbierto = false;
+  categorias: Categoria[] = [];
+  cargandoCategorias = false;
+  nuevaCategoriaNombre = '';
+  guardandoCategoria = false;
+  editandoCategoriaId: number | null = null;
+  editandoCategoriaNombre = '';
+
   constructor(
     private adminService: AdminService,
-    private authService: AuthService
+    private authService: AuthService,
+    private categoriaService: CategoriaService
   ) {
     addIcons({
       peopleOutline, pulseOutline, addCircleOutline, starOutline,
       searchOutline, downloadOutline, createOutline, trashOutline,
-      personOutline, refreshOutline, closeOutline, saveOutline
+      personOutline, refreshOutline, closeOutline, saveOutline,
+      pricetagOutline, checkmarkOutline, addOutline,
+      briefcaseOutline, personAddOutline, peopleCircleOutline, megaphoneOutline
     });
   }
 
   async ngOnInit() {
     this.rolActual = await this.authService.getRol() || '';
+    this.cargarStats();
+    this.cargarEmprendedores();
+  }
+
+  ionViewWillEnter() {
     this.cargarStats();
     this.cargarEmprendedores();
   }
@@ -81,14 +107,18 @@ export class DashboardPage implements OnInit {
 
   cargarEmprendedores() {
     this.cargando = true;
+    this.cargandoRecarga = true;
+
     this.adminService.getEmprendedores().subscribe({
       next: (data) => {
         this.emprendedores = data;
         this.cargando = false;
+        setTimeout(() => this.cargandoRecarga = false, 400);
       },
       error: () => {
         this.emprendedores = [];
         this.cargando = false;
+        setTimeout(() => this.cargandoRecarga = false, 400);
       }
     });
   }
@@ -117,7 +147,7 @@ export class DashboardPage implements OnInit {
     this.modoEdicion = false;
     this.emprendedorActualId = null;
     this.form = this.formVacio();
-    this.form.role = 'emprendedor'; // por defecto siempre emprendedor
+    this.form.role = 'emprendedor';
     this.modalAbierto = true;
   }
 
@@ -160,6 +190,7 @@ export class DashboardPage implements OnInit {
           this.guardando = false;
           this.cerrarModal();
           this.cargarEmprendedores();
+          this.cargarStats();
         },
         error: (err) => {
           this.guardando = false;
@@ -172,6 +203,7 @@ export class DashboardPage implements OnInit {
           this.guardando = false;
           this.cerrarModal();
           this.cargarEmprendedores();
+          this.cargarStats();
         },
         error: (err) => {
           this.guardando = false;
@@ -188,7 +220,7 @@ export class DashboardPage implements OnInit {
     } else if (err.status === 403 && err.error?.message) {
       alert(err.error.message);
     } else {
-      alert('No se pudo guardar el emprendedor');
+      alert('No se pudo completar la acción');
     }
   }
 
@@ -204,12 +236,100 @@ export class DashboardPage implements OnInit {
     });
   }
 
-    toggleMfa(e: Emprendedor) {
+  toggleMfa(e: Emprendedor) {
     this.adminService.toggleMfa(e.id).subscribe({
       next: (res) => {
         e.mfa_enabled = res.usuario.mfa_enabled;
       },
       error: () => alert('No se pudo actualizar el MFA')
+    });
+  }
+
+  // ===== CATEGORÍAS =====
+
+  abrirModalCategorias() {
+    this.modalCategoriasAbierto = true;
+    this.cargarCategorias();
+  }
+
+  cerrarModalCategorias() {
+    this.modalCategoriasAbierto = false;
+    this.nuevaCategoriaNombre = '';
+    this.editandoCategoriaId = null;
+  }
+
+  cargarCategorias() {
+    this.cargandoCategorias = true;
+    this.categoriaService.getAll().subscribe({
+      next: (data) => {
+        this.categorias = data;
+        this.cargandoCategorias = false;
+      },
+      error: () => {
+        this.categorias = [];
+        this.cargandoCategorias = false;
+      }
+    });
+  }
+
+  crearCategoria() {
+    if (!this.nuevaCategoriaNombre.trim()) {
+      alert('Escribe un nombre para la categoría');
+      return;
+    }
+
+    this.guardandoCategoria = true;
+    this.categoriaService.create({ nombre: this.nuevaCategoriaNombre.trim() }).subscribe({
+      next: () => {
+        this.guardandoCategoria = false;
+        this.nuevaCategoriaNombre = '';
+        this.cargarCategorias();
+      },
+      error: (err) => {
+        this.guardandoCategoria = false;
+        this.mostrarError(err);
+      }
+    });
+  }
+
+  iniciarEdicionCategoria(cat: Categoria) {
+    this.editandoCategoriaId = cat.id;
+    this.editandoCategoriaNombre = cat.nombre;
+  }
+
+  cancelarEdicionCategoria() {
+    this.editandoCategoriaId = null;
+    this.editandoCategoriaNombre = '';
+  }
+
+  guardarEdicionCategoria(cat: Categoria) {
+    if (!this.editandoCategoriaNombre.trim()) {
+      alert('El nombre no puede estar vacío');
+      return;
+    }
+
+    this.categoriaService.update(cat.id, { nombre: this.editandoCategoriaNombre.trim() }).subscribe({
+      next: () => {
+        this.cancelarEdicionCategoria();
+        this.cargarCategorias();
+      },
+      error: (err) => this.mostrarError(err)
+    });
+  }
+
+  toggleActivaCategoria(cat: Categoria) {
+    this.categoriaService.update(cat.id, { activa: !cat.activa }).subscribe({
+      next: () => this.cargarCategorias(),
+      error: (err) => this.mostrarError(err)
+    });
+  }
+
+  eliminarCategoria(cat: Categoria) {
+    if (!confirm(`¿Eliminar la categoría "${cat.nombre}"? Los emprendimientos que la usan quedarán sin categoría.`)) return;
+
+    this.categoriaService.delete(cat.id).subscribe({
+      next: () => this.cargarCategorias(),
+      error: (err) => this.mostrarError(err)
     });
   }
 }

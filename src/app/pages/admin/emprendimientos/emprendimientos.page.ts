@@ -5,26 +5,12 @@ import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   searchOutline, createOutline, trashOutline, refreshOutline,
-  personOutline, closeOutline, saveOutline
+  personOutline, closeOutline, saveOutline, star, starOutline
 } from 'ionicons/icons';
 import { AdminHeaderComponent } from '../../../shared/headers/admin-header/admin-header.component';
-
-interface Emprendedor {
-  id: number;
-  nombre: string;
-}
-
-interface Emprendimiento {
-  id: number;
-  nombre: string;
-  emprendedorId: number;
-  emprendedorNombre: string;
-  categoria: string;
-  precio: string;
-  estado: 'activo' | 'inactivo' | 'destacado';
-  fecha: string;
-  descripcion: string;
-}
+import { EmprendimientoService } from '../../../services/emprendimiento';
+import { CategoriaService, Categoria } from '../../../services/categoria';
+import { Emprendimiento } from '../../../models/emprendimiento.model';
 
 @Component({
   selector: 'app-emprendimientos',
@@ -42,76 +28,68 @@ export class EmprendimientosPage implements OnInit {
   textoBusqueda = '';
   categoriaFiltro = 'todas';
   estadoFiltro = 'todos';
+  cargando = true;
 
-  categorias = ['Comida', 'Artesanías', 'Ropa', 'Belleza', 'Accesorios'];
+  emprendimientos: Emprendimiento[] = [];
+  categorias: Categoria[] = [];
 
-  emprendedores: Emprendedor[] = [
-    { id: 1, nombre: 'María García' },
-    { id: 2, nombre: 'Lupita Martínez' }
-  ];
-
-  emprendimientos: Emprendimiento[] = [
-    {
-      id: 1,
-      nombre: 'Tacos El Güero',
-      emprendedorId: 1,
-      emprendedorNombre: 'María García',
-      categoria: 'Comida',
-      precio: '$50-100',
-      estado: 'activo',
-      fecha: '2026-01-15',
-      descripcion: 'Los mejores tacos de la noche.'
-    },
-    {
-      id: 2,
-      nombre: 'Artesanías Lupita',
-      emprendedorId: 2,
-      emprendedorNombre: 'Lupita Martínez',
-      categoria: 'Artesanías',
-      precio: '$100-500',
-      estado: 'destacado',
-      fecha: '2026-02-20',
-      descripcion: 'Artesanías hechas a mano.'
-    }
-  ];
-
-  // Modal
+  // Modal (solo edición)
   modalAbierto = false;
-  modoEdicion = false;
-  emprendimientoActual: Emprendimiento = this.emprendimientoVacio();
+  guardando = false;
+  emprendimientoActual: any = {};
 
-  constructor() {
+  constructor(
+    private emprendimientoService: EmprendimientoService,
+    private categoriaService: CategoriaService
+  ) {
     addIcons({
       searchOutline, createOutline, trashOutline, refreshOutline,
-      personOutline, closeOutline, saveOutline
+      personOutline, closeOutline, saveOutline, star, starOutline
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.cargarEmprendimientos();
+    this.cargarCategorias();
+  }
 
-  emprendimientoVacio(): Emprendimiento {
-    return {
-      id: 0,
-      nombre: '',
-      emprendedorId: 0,
-      emprendedorNombre: '',
-      categoria: '',
-      precio: '',
-      estado: 'activo',
-      fecha: new Date().toISOString().split('T')[0],
-      descripcion: ''
-    };
+  cargarEmprendimientos() {
+    this.cargando = true;
+    this.emprendimientoService.getAllAdmin().subscribe({
+      next: (data) => {
+        this.emprendimientos = data;
+        this.cargando = false;
+      },
+      error: () => {
+        this.emprendimientos = [];
+        this.cargando = false;
+      }
+    });
+  }
+
+  cargarCategorias() {
+    this.categoriaService.getAll().subscribe({
+      next: (data) => { this.categorias = data; },
+      error: () => { this.categorias = []; }
+    });
+  }
+
+  nombreEmprendedor(emp: Emprendimiento): string {
+    const e: any = emp.emprendedor;
+    if (!e) return '—';
+    return `${e.nombre} ${e.apellido_paterno || ''}`.trim();
   }
 
   get emprendimientosFiltrados(): Emprendimiento[] {
     return this.emprendimientos.filter(emp => {
+      const texto = this.textoBusqueda.toLowerCase();
       const coincideTexto = !this.textoBusqueda ||
-        emp.nombre.toLowerCase().includes(this.textoBusqueda.toLowerCase()) ||
-        emp.categoria.toLowerCase().includes(this.textoBusqueda.toLowerCase()) ||
-        emp.descripcion.toLowerCase().includes(this.textoBusqueda.toLowerCase());
+        emp.nombre.toLowerCase().includes(texto) ||
+        (emp.categoria?.nombre.toLowerCase().includes(texto) ?? false) ||
+        (emp.descripcion?.toLowerCase().includes(texto) ?? false);
 
       const coincideCategoria = this.categoriaFiltro === 'todas' ||
-        emp.categoria === this.categoriaFiltro;
+        (emp.categoria?.nombre === this.categoriaFiltro);
 
       const coincideEstado = this.estadoFiltro === 'todos' ||
         emp.estado === this.estadoFiltro;
@@ -120,15 +98,17 @@ export class EmprendimientosPage implements OnInit {
     });
   }
 
-  abrirModalNuevo() {
-    this.modoEdicion = false;
-    this.emprendimientoActual = this.emprendimientoVacio();
-    this.modalAbierto = true;
-  }
-
   abrirModalEditar(emp: Emprendimiento) {
-    this.modoEdicion = true;
-    this.emprendimientoActual = { ...emp };
+    this.emprendimientoActual = {
+      id: emp.id,
+      nombre: emp.nombre,
+      categoria_id: emp.categoria_id,
+      precio_desde: emp.precio_desde,
+      precio_hasta: emp.precio_hasta,
+      estado: emp.estado,
+      destacado: emp.destacado,
+      descripcion: emp.descripcion
+    };
     this.modalAbierto = true;
   }
 
@@ -136,42 +116,46 @@ export class EmprendimientosPage implements OnInit {
     this.modalAbierto = false;
   }
 
-  onEmprendedorChange() {
-    const seleccionado = this.emprendedores.find(
-      e => e.id === Number(this.emprendimientoActual.emprendedorId)
-    );
-    this.emprendimientoActual.emprendedorNombre = seleccionado ? seleccionado.nombre : '';
-  }
-
   guardarEmprendimiento() {
-    if (!this.emprendimientoActual.nombre || !this.emprendimientoActual.emprendedorId) {
+    if (!this.emprendimientoActual.nombre) {
+      alert('El nombre es obligatorio');
       return;
     }
 
-    if (this.modoEdicion) {
-      const index = this.emprendimientos.findIndex(e => e.id === this.emprendimientoActual.id);
-      if (index !== -1) {
-        this.emprendimientos[index] = { ...this.emprendimientoActual };
-      }
-    } else {
-      const nuevoId = this.emprendimientos.length > 0
-        ? Math.max(...this.emprendimientos.map(e => e.id)) + 1
-        : 1;
-      this.emprendimientos.push({ ...this.emprendimientoActual, id: nuevoId });
-    }
+    this.guardando = true;
+    const { id, ...datos } = this.emprendimientoActual;
 
-    this.cerrarModal();
+    this.emprendimientoService.update(id, datos).subscribe({
+      next: () => {
+        this.guardando = false;
+        this.cerrarModal();
+        this.cargarEmprendimientos();
+      },
+      error: () => {
+        this.guardando = false;
+        alert('No se pudo actualizar el emprendimiento');
+      }
+    });
   }
 
   eliminarEmprendimiento(emp: Emprendimiento) {
     const confirmar = confirm(`¿Seguro que deseas eliminar "${emp.nombre}"?`);
     if (confirmar) {
-      this.emprendimientos = this.emprendimientos.filter(e => e.id !== emp.id);
+      this.emprendimientoService.delete(emp.id).subscribe({
+        next: () => this.cargarEmprendimientos(),
+        error: () => alert('No se pudo eliminar el emprendimiento')
+      });
     }
   }
 
+  toggleDestacado(emp: Emprendimiento) {
+    this.emprendimientoService.update(emp.id, { destacado: !emp.destacado } as any).subscribe({
+      next: () => this.cargarEmprendimientos(),
+      error: () => alert('No se pudo actualizar el destacado')
+    });
+  }
+
   recargar() {
-    // Aquí luego conectas la llamada real al backend
-    console.log('Recargando emprendimientos...');
+    this.cargarEmprendimientos();
   }
 }

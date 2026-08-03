@@ -9,174 +9,270 @@
       <p>Gestiona, edita y organiza los emprendimientos del Market Nocturno</p>
     </div>
 
-    <!-- Stats y botón -->
-    <div class="stats-btns-row">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <ion-icon name="people-outline"></ion-icon>
-          <div>
-            <h3>{{ stats.total }}</h3>
-            <p>Total<br>Emprendimientos</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <ion-icon name="pulse-outline"></ion-icon>
-          <div>
-            <h3>{{ stats.activos }}</h3>
-            <p>Activos</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <ion-icon name="add-circle-outline"></ion-icon>
-          <div>
-            <h3>{{ stats.nuevos }}</h3>
-            <p>Nuevos (Mes)</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <ion-icon name="star-outline"></ion-icon>
-          <div>
-            <h3>{{ stats.destacados }}</h3>
-            <p>Destacados</p>
-          </div>
+    <!-- Stats arriba, ancho completo -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <ion-icon name="people-outline"></ion-icon>
+        <div>
+          <h3>{{ stats.total }}</h3>
+          <p>Total<br>Emprendimientos</p>
         </div>
       </div>
+      <div class="stat-card">
+        <ion-icon name="pulse-outline"></ion-icon>
+        <div>
+          <h3>{{ stats.activos }}</h3>
+          <p>Activos</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        <div>
+          <h3>{{ stats.nuevos }}</h3>
+          <p>Nuevos (Mes)</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <ion-icon name="star-outline"></ion-icon>
+        <div>
+          <h3>{{ stats.destacados }}</h3>
+          <p>Destacados</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <ion-icon name="briefcase-outline"></ion-icon>
+        <div>
+          <h3>{{ stats.total_emprendedores }}</h3>
+          <p>Total<br>Emprendedores</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <ion-icon name="person-add-outline"></ion-icon>
+        <div>
+          <h3>{{ stats.nuevos_emprendedores }}</h3>
+          <p>Nuevos<br>Emprendedores</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <ion-icon name="people-circle-outline"></ion-icon>
+        <div>
+          <h3>{{ stats.total_clientes }}</h3>
+          <p>Total<br>Clientes</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <ion-icon name="megaphone-outline"></ion-icon>
+        <div>
+          <h3>{{ stats.convocatorias_activas }}</h3>
+          <p>Convocatorias<br>Activas</p>
+        </div>
+      </div>
+    </div>
 
-      <div class="right-section">
-        <div class="admin-btns-row">
-          <button class="btn-nueva" (click)="abrirModalNuevo()">
-          <ion-icon name="person-outline"></ion-icon>
-          Nuevo Emprendedor
+    <!-- Botones -->
+    <div class="admin-btns-row">
+      <button class="btn-nueva" (click)="abrirModalNuevo()">
+        <ion-icon name="person-outline"></ion-icon>
+        Nuevo Emprendedor
+      </button>
+      <button class="btn-categorias" (click)="abrirModalCategorias()">
+        <ion-icon name="pricetag-outline"></ion-icon>
+        Categorías
+      </button>
+    </div>
+
+    <!-- Búsqueda -->
+    <div class="busqueda-row">
+      <div class="busqueda-input">
+        <ion-icon name="search-outline"></ion-icon>
+        <input type="text" [(ngModel)]="textoBusqueda" placeholder="Busca emprendedor por nombre o correo" class="busqueda-field">
+      </div>
+    </div>
+
+    <!-- Tabla Emprendedores -->
+    <div class="tabla-section">
+      <div class="tabla-header">
+        <h2>✨ Emprendedores Registrados</h2>
+        <button class="btn-recargar" (click)="cargarEmprendedores()">
+          <ion-icon name="refresh-outline" [class.spin]="cargandoRecarga"></ion-icon>
+          Recargar
         </button>
-        </div>
-        <div class="busqueda-row">
-          <div class="busqueda-input">
-            <ion-icon name="search-outline"></ion-icon>
-            <input type="text" [(ngModel)]="textoBusqueda" placeholder="Busca emprendedor por nombre o correo" class="busqueda-field">
-          </div>
-        </div>
-
-        <!-- Tabla Emprendedores -->
-        <div class="tabla-section">
-          <div class="tabla-header">
-            <h2>✨ Emprendedores Registrados</h2>
-            <button class="btn-recargar">
-              <ion-icon name="refresh-outline"></ion-icon>
-              Recargar
-            </button>
-          </div>
-          <div class="tabla-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>NOMBRE</th>
-                  <th>EMAIL</th>
-                  <th>TELÉFONO</th>
-                  <th>REGISTRO</th>
-                  <th>MFA</th>
-                  <th>ACCIONES</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let emp of emprendedoresFiltrados">
-                <td>{{ emp.id }}</td>
-                <td>{{ nombreCompleto(emp) }}</td>
-                <td>{{ emp.email }}</td>
-                <td>{{ emp.telefono }}</td>
-                <td>{{ emp.created_at | date:'yyyy-MM-dd' }}</td>
-                <td>
-                  <span
-                    [class]="'badge badge-clickable ' + (emp.mfa_enabled ? 'activo' : 'inactivo')"
-                    (click)="toggleMfa(emp)"
-                    title="Click para activar/desactivar MFA">
-                    {{ emp.mfa_enabled ? 'Sí' : 'No' }}
-                  </span>
-                </td>
-                <td class="acciones">
-                  <button class="btn-editar" (click)="abrirModalEditar(emp)">
-                    <ion-icon name="create-outline"></ion-icon>
-                  </button>
-                  <button class="btn-eliminar" (click)="eliminarEmprendedor(emp)">
-                    <ion-icon name="trash-outline"></ion-icon>
-                  </button>
-                </td>
-              </tr>
-                <tr *ngIf="emprendedoresFiltrados.length === 0">
-                  <td colspan="7" class="sin-datos">No hay emprendedores registrados</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
+      </div>
+      <div class="tabla-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NOMBRE</th>
+              <th>EMAIL</th>
+              <th>TELÉFONO</th>
+              <th>REGISTRO</th>
+              <th>MFA</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let emp of emprendedoresFiltrados">
+              <td>{{ emp.id }}</td>
+              <td>{{ nombreCompleto(emp) }}</td>
+              <td>{{ emp.email }}</td>
+              <td>{{ emp.telefono }}</td>
+              <td>{{ emp.created_at | date:'yyyy-MM-dd' }}</td>
+              <td>
+                <span
+                  [class]="'badge badge-clickable ' + (emp.mfa_enabled ? 'activo' : 'inactivo')"
+                  (click)="toggleMfa(emp)"
+                  title="Click para activar/desactivar MFA">
+                  {{ emp.mfa_enabled ? 'Sí' : 'No' }}
+                </span>
+              </td>
+              <td class="acciones">
+                <button class="btn-editar" (click)="abrirModalEditar(emp)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </button>
+                <button class="btn-eliminar" (click)="eliminarEmprendedor(emp)">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="emprendedoresFiltrados.length === 0">
+              <td colspan="7" class="sin-datos">No hay emprendedores registrados</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
   </div>
 
   <!-- Modal Nuevo/Editar Emprendedor -->
-<div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
-  <div class="modal-card" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h2>{{ modoEdicion ? 'Editar Emprendedor' : 'Nuevo Emprendedor' }}</h2>
-      <button class="btn-cerrar" (click)="cerrarModal()">
-        <ion-icon name="close-outline"></ion-icon>
-      </button>
-    </div>
+  <div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ modoEdicion ? 'Editar Emprendedor' : 'Nuevo Emprendedor' }}</h2>
+        <button class="btn-cerrar" (click)="cerrarModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
 
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" [(ngModel)]="form.nombre" placeholder="Nombre">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" [(ngModel)]="form.nombre" placeholder="Nombre">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" [(ngModel)]="form.telefono" placeholder="449 000 0000">
+          </div>
         </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Apellido paterno</label>
+            <input type="text" [(ngModel)]="form.apellido_paterno" placeholder="Apellido paterno">
+          </div>
+          <div class="form-group">
+            <label>Apellido materno</label>
+            <input type="text" [(ngModel)]="form.apellido_materno" placeholder="Apellido materno">
+          </div>
+        </div>
+
         <div class="form-group">
-          <label>Teléfono</label>
-          <input type="text" [(ngModel)]="form.telefono" placeholder="449 000 0000">
+          <label>Correo electrónico</label>
+          <input type="email" [(ngModel)]="form.email" placeholder="correo@ejemplo.com">
+        </div>
+
+        <div class="form-group" *ngIf="!modoEdicion">
+          <label>Contraseña</label>
+          <input type="password" [(ngModel)]="form.password" placeholder="Mínimo 8 caracteres">
+        </div>
+
+        <!-- Solo superadmin puede elegir el tipo de cuenta; el admin siempre crea emprendedores -->
+        <div class="form-group" *ngIf="!modoEdicion && rolActual === 'superadmin'">
+          <label>Tipo de cuenta</label>
+          <select [(ngModel)]="form.role">
+            <option value="emprendedor">Emprendedor</option>
+            <option value="admin">Admin</option>
+            <option value="superadmin">Superadmin</option>
+          </select>
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Apellido paterno</label>
-          <input type="text" [(ngModel)]="form.apellido_paterno" placeholder="Apellido paterno">
-        </div>
-        <div class="form-group">
-          <label>Apellido materno</label>
-          <input type="text" [(ngModel)]="form.apellido_materno" placeholder="Apellido materno">
-        </div>
+      <div class="modal-footer">
+        <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-guardar-modal" (click)="guardar()" [disabled]="guardando">
+          <ion-icon name="save-outline"></ion-icon>
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
+        </button>
       </div>
-
-      <div class="form-group">
-        <label>Correo electrónico</label>
-        <input type="email" [(ngModel)]="form.email" placeholder="correo@ejemplo.com">
-      </div>
-
-      <div class="form-group" *ngIf="!modoEdicion">
-        <label>Contraseña</label>
-        <input type="password" [(ngModel)]="form.password" placeholder="Mínimo 8 caracteres">
-      </div>
-
-      <!-- Solo superadmin puede elegir el tipo de cuenta; el admin siempre crea emprendedores -->
-      <div class="form-group" *ngIf="!modoEdicion && rolActual === 'superadmin'">
-        <label>Tipo de cuenta</label>
-        <select [(ngModel)]="form.role">
-          <option value="emprendedor">Emprendedor</option>
-          <option value="admin">Admin</option>
-          <option value="superadmin">Superadmin</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
-      <button class="btn-guardar-modal" (click)="guardar()" [disabled]="guardando">
-        <ion-icon name="save-outline"></ion-icon>
-        {{ guardando ? 'Guardando...' : 'Guardar' }}
-      </button>
     </div>
   </div>
-</div>
-  
+
+  <!-- Modal Categorías -->
+  <div class="modal-overlay" *ngIf="modalCategoriasAbierto" (click)="cerrarModalCategorias()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Categorías</h2>
+        <button class="btn-cerrar" (click)="cerrarModalCategorias()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="nueva-categoria-row">
+          <input
+            type="text"
+            [(ngModel)]="nuevaCategoriaNombre"
+            placeholder="Nombre de la nueva categoría"
+            (keyup.enter)="crearCategoria()">
+          <button class="btn-agregar-categoria" (click)="crearCategoria()" [disabled]="guardandoCategoria">
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+        </div>
+
+        <div class="categorias-lista" *ngIf="!cargandoCategorias">
+          <div class="categoria-item" *ngFor="let cat of categorias">
+            <ng-container *ngIf="editandoCategoriaId !== cat.id">
+              <span class="categoria-nombre" [class.inactiva]="!cat.activa">{{ cat.nombre }}</span>
+
+              <div class="categoria-acciones">
+                <label class="switch-mini">
+                  <input type="checkbox" [checked]="cat.activa" (change)="toggleActivaCategoria(cat)">
+                  <span>{{ cat.activa ? 'Activa' : 'Inactiva' }}</span>
+                </label>
+                <button (click)="iniciarEdicionCategoria(cat)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </button>
+                <button (click)="eliminarCategoria(cat)" class="btn-eliminar-mini">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="editandoCategoriaId === cat.id">
+              <input
+                type="text"
+                [(ngModel)]="editandoCategoriaNombre"
+                class="input-edicion"
+                (keyup.enter)="guardarEdicionCategoria(cat)">
+              <div class="categoria-acciones">
+                <button (click)="guardarEdicionCategoria(cat)">
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                </button>
+                <button (click)="cancelarEdicionCategoria()">
+                  <ion-icon name="close-outline"></ion-icon>
+                </button>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="sin-categorias" *ngIf="categorias.length === 0">
+            No hay categorías registradas
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </ion-content>

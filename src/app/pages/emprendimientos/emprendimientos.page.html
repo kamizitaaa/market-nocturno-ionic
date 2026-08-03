@@ -25,19 +25,16 @@
       </div>
 
       <!-- Estado -->
+      <!-- Destacados -->
       <div class="filtro-section">
         <div class="filtro-title" (click)="toggleFiltro('estado')">
-          <span>Estado</span>
+          <span>Destacados</span>
           <ion-icon [name]="filtros.estado ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
         </div>
         <div class="filtro-options" *ngIf="filtros.estado">
           <label class="filtro-option">
-            <input type="checkbox" [(ngModel)]="filtroActivo" (change)="aplicarFiltros()">
-            Activo
-          </label>
-          <label class="filtro-option">
             <input type="checkbox" [(ngModel)]="filtroDestacado" (change)="aplicarFiltros()">
-            Destacado
+            ⭐ Solo destacados
           </label>
         </div>
       </div>

@@ -7,6 +7,10 @@ export interface Stats {
   activos: number;
   nuevos: number;
   destacados: number;
+  total_emprendedores: number;
+  nuevos_emprendedores: number;
+  total_clientes: number;
+  convocatorias_activas: number;
 }
 
 export interface Emprendedor {

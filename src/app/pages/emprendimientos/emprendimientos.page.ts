@@ -29,7 +29,6 @@ export class EmprendimientosPage implements OnInit {
   emprendimientosFiltrados: Emprendimiento[] = [];
   textoBusqueda = '';
   vistaGrid = true;
-  filtroActivo = false;
   filtroDestacado = false;
   filtroPrecio = '';
   cargando = false;
@@ -111,8 +110,20 @@ export class EmprendimientosPage implements OnInit {
       );
     }
 
-    if (this.filtroActivo) {
-      resultado = resultado.filter(e => e.estado === 'activo');
+    if (this.filtroDestacado) {
+      resultado = resultado.filter(e => e.destacado === true);
+    }
+
+    if (this.filtroPrecio) {
+      resultado = resultado.filter(e => {
+        const precio = Number(e.precio_desde) || 0;
+
+        if (this.filtroPrecio === 'economico') return precio < 100;
+        if (this.filtroPrecio === 'medio') return precio >= 100 && precio <= 500;
+        if (this.filtroPrecio === 'alto') return precio > 500;
+
+        return true;
+      });
     }
 
     this.emprendimientosFiltrados = resultado;
@@ -120,7 +131,6 @@ export class EmprendimientosPage implements OnInit {
 
   limpiarFiltros() {
     this.textoBusqueda = '';
-    this.filtroActivo = false;
     this.filtroDestacado = false;
     this.filtroPrecio = '';
     this.categorias.forEach(c => c.seleccionada = false);

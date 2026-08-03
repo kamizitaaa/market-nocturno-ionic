@@ -9,11 +9,6 @@
       <p>Administra todos los emprendimientos registrados en el Market Nocturno</p>
     </div>
 
-    <!-- Acciones -->
-    <div class="acciones-top">
-      <button class="btn-nuevo" (click)="abrirModalNuevo()">+ Nuevo Emprendimiento</button>
-    </div>
-
     <div class="busqueda-row">
       <div class="busqueda-input">
         <ion-icon name="search-outline"></ion-icon>
@@ -21,13 +16,12 @@
       </div>
       <select class="filtro-select" [(ngModel)]="categoriaFiltro">
         <option value="todas">Todas las categorías</option>
-        <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+        <option *ngFor="let cat of categorias" [value]="cat.nombre">{{ cat.nombre }}</option>
       </select>
       <select class="filtro-select" [(ngModel)]="estadoFiltro">
         <option value="todos">Todos los estados</option>
         <option value="activo">Activo</option>
         <option value="inactivo">Inactivo</option>
-        <option value="destacado">Destacado</option>
       </select>
     </div>
 
@@ -55,14 +49,23 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let emp of emprendimientosFiltrados">
+            <tr *ngFor="let emp of emprendimientosFiltrados" [class.fila-destacada]="emp.destacado">
               <td>{{ emp.id }}</td>
-              <td>{{ emp.nombre }}</td>
-              <td>{{ emp.emprendedorNombre }}</td>
-              <td>{{ emp.categoria }}</td>
-              <td>{{ emp.precio }}</td>
+              <td>
+                <ion-icon
+                  [name]="emp.destacado ? 'star' : 'star-outline'"
+                  class="icono-destacado"
+                  [class.activa]="emp.destacado"
+                  (click)="toggleDestacado(emp)"
+                  title="Marcar/desmarcar como destacado">
+                </ion-icon>
+                {{ emp.nombre }}
+              </td>
+              <td>{{ nombreEmprendedor(emp) }}</td>
+              <td>{{ emp.categoria?.nombre || '—' }}</td>
+              <td>${{ emp.precio_desde }} - ${{ emp.precio_hasta }}</td>
               <td><span [class]="'badge ' + emp.estado">{{ emp.estado }}</span></td>
-              <td>{{ emp.fecha }}</td>
+              <td>{{ emp.fecha | date:'yyyy-MM-dd' }}</td>
               <td class="acciones">
                 <button class="btn-editar" (click)="abrirModalEditar(emp)">
                   <ion-icon name="create-outline"></ion-icon>
@@ -82,11 +85,11 @@
 
   </div>
 
-  <!-- Modal Nuevo/Editar -->
+  <!-- Modal Editar -->
   <div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
     <div class="modal-card" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h2>{{ modoEdicion ? 'Editar Emprendimiento' : 'Nuevo Emprendimiento' }}</h2>
+        <h2>Editar Emprendimiento</h2>
         <button class="btn-cerrar" (click)="cerrarModal()">
           <ion-icon name="close-outline"></ion-icon>
         </button>
@@ -98,43 +101,40 @@
           <input type="text" [(ngModel)]="emprendimientoActual.nombre" placeholder="Ej. Tacos El Güero">
         </div>
 
-        <div class="form-group">
-          <label>Emprendedor</label>
-          <select [(ngModel)]="emprendimientoActual.emprendedorId" (ngModelChange)="onEmprendedorChange()">
-            <option [value]="0" disabled>Selecciona un emprendedor</option>
-            <option *ngFor="let e of emprendedores" [value]="e.id">{{ e.nombre }}</option>
-          </select>
-        </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>Categoría</label>
-            <select [(ngModel)]="emprendimientoActual.categoria">
-              <option value="" disabled>Selecciona categoría</option>
-              <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+            <select [(ngModel)]="emprendimientoActual.categoria_id">
+              <option [ngValue]="null" disabled>Selecciona categoría</option>
+              <option *ngFor="let cat of categorias" [ngValue]="cat.id">{{ cat.nombre }}</option>
             </select>
           </div>
 
-          <div class="form-group">
-            <label>Rango de precio</label>
-            <input type="text" [(ngModel)]="emprendimientoActual.precio" placeholder="Ej. $50-100">
-          </div>
-        </div>
-
-        <div class="form-row">
           <div class="form-group">
             <label>Estado</label>
             <select [(ngModel)]="emprendimientoActual.estado">
               <option value="activo">Activo</option>
               <option value="inactivo">Inactivo</option>
-              <option value="destacado">Destacado</option>
             </select>
           </div>
+        </div>
 
+        <div class="form-row">
           <div class="form-group">
-            <label>Fecha</label>
-            <input type="date" [(ngModel)]="emprendimientoActual.fecha">
+            <label>Precio desde</label>
+            <input type="number" [(ngModel)]="emprendimientoActual.precio_desde" placeholder="30">
           </div>
+          <div class="form-group">
+            <label>Precio hasta</label>
+            <input type="number" [(ngModel)]="emprendimientoActual.precio_hasta" placeholder="80">
+          </div>
+        </div>
+
+        <div class="form-group form-checkbox">
+          <label class="switch-label">
+            <input type="checkbox" [(ngModel)]="emprendimientoActual.destacado">
+            <span>⭐ Marcar como destacado</span>
+          </label>
         </div>
 
         <div class="form-group">
@@ -145,9 +145,9 @@
 
       <div class="modal-footer">
         <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn-guardar" (click)="guardarEmprendimiento()">
+        <button class="btn-guardar" (click)="guardarEmprendimiento()" [disabled]="guardando">
           <ion-icon name="save-outline"></ion-icon>
-          Guardar
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
         </button>
       </div>
     </div>
