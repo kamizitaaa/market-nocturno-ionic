@@ -1,19 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { calendarOutline, megaphoneOutline } from 'ionicons/icons';
+import { calendarOutline, megaphoneOutline, closeOutline } from 'ionicons/icons';
 import { HeaderComponent } from '../../shared/headers/public-header/header.component';
-
-interface Convocatoria {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  fechaInicio: string;
-  fechaFin: string;
-  imagen: string;
-  activa: boolean;
-}
+import { ConvocatoriaService, Convocatoria } from '../../services/convocatoria';
 
 @Component({
   selector: 'app-convocatorias-public',
@@ -21,42 +13,86 @@ interface Convocatoria {
   styleUrls: ['./convocatorias.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
+    CommonModule, FormsModule,
     IonContent, IonIcon,
     HeaderComponent
   ]
 })
 export class ConvocatoriasPage implements OnInit {
 
-  // Por ahora local; cuando tengas backend, aquí harás el fetch al servicio
-  convocatorias: Convocatoria[] = [
-    {
-      id: 1,
-      titulo: 'Convocatoria Edición Agosto 2026',
-      descripcion: 'Abrimos convocatoria para nuevos emprendedores que quieran participar en la edición de agosto del Market Nocturno. Buscamos negocios de comida, artesanías, ropa y accesorios.',
-      fechaInicio: '2026-07-25',
-      fechaFin: '2026-08-10',
-      imagen: 'https://via.placeholder.com/900x400',
-      activa: true
-    },
-    {
-      id: 2,
-      titulo: 'Convocatoria Zona de Artesanías',
-      descripcion: 'Buscamos artesanos locales para ampliar la zona de artesanías del mercado. Trae tus productos hechos a mano y sé parte de esta nueva edición.',
-      fechaInicio: '2026-06-01',
-      fechaFin: '2026-06-30',
-      imagen: 'https://via.placeholder.com/900x400',
-      activa: false
-    }
-  ];
+  convocatoriasActivas: Convocatoria[] = [];
+  cargando = true;
 
-  constructor() {
-    addIcons({ calendarOutline, megaphoneOutline });
+  // Modal inscripción
+  modalInscripcionAbierto = false;
+  convocatoriaSeleccionada: Convocatoria | null = null;
+  enviandoInscripcion = false;
+
+  formInscripcion = {
+    nombre: '',
+    telefono: '',
+    email: '',
+    tipo_negocio: '',
+    mensaje: ''
+  };
+
+  constructor(private convocatoriaService: ConvocatoriaService) {
+    addIcons({ calendarOutline, megaphoneOutline, closeOutline });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.cargarConvocatorias();
+  }
 
-  get convocatoriasActivas(): Convocatoria[] {
-    return this.convocatorias.filter(c => c.activa);
+  cargarConvocatorias() {
+    this.cargando = true;
+    this.convocatoriaService.getAll().subscribe({
+      next: (data) => {
+        this.convocatoriasActivas = data;
+        this.cargando = false;
+      },
+      error: () => {
+        this.convocatoriasActivas = [];
+        this.cargando = false;
+      }
+    });
+  }
+
+  abrirModalInscripcion(conv: Convocatoria) {
+    this.convocatoriaSeleccionada = conv;
+    this.formInscripcion = { nombre: '', telefono: '', email: '', tipo_negocio: '', mensaje: '' };
+    this.modalInscripcionAbierto = true;
+  }
+
+  cerrarModalInscripcion() {
+    this.modalInscripcionAbierto = false;
+    this.convocatoriaSeleccionada = null;
+  }
+
+  enviarInscripcion() {
+    if (!this.formInscripcion.nombre || !this.formInscripcion.telefono || !this.formInscripcion.tipo_negocio) {
+      alert('Nombre, teléfono y tipo de negocio son obligatorios');
+      return;
+    }
+
+    if (!this.convocatoriaSeleccionada) return;
+
+    this.enviandoInscripcion = true;
+    this.convocatoriaService.inscribirse(this.convocatoriaSeleccionada.id, this.formInscripcion).subscribe({
+      next: (res) => {
+        this.enviandoInscripcion = false;
+        alert(res.message);
+        this.cerrarModalInscripcion();
+      },
+      error: (err) => {
+        this.enviandoInscripcion = false;
+        if (err.error?.errors) {
+          const mensajes = ([] as string[]).concat(...Object.values(err.error.errors) as string[][]).join('\n');
+          alert(mensajes);
+        } else {
+          alert(err.error?.message || 'No se pudo completar la inscripción');
+        }
+      }
+    });
   }
 }

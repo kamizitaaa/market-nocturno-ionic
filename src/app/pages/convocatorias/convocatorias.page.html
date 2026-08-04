@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="convocatorias-content">
   <div class="convocatorias-container">
 
     <!-- Header -->
@@ -11,31 +11,79 @@
     </div>
 
     <!-- Lista de convocatorias activas -->
-    <div class="convocatorias-lista" *ngIf="convocatoriasActivas.length > 0">
+    <div class="convocatorias-lista" *ngIf="!cargando && convocatoriasActivas.length > 0">
       <div class="convocatoria-banner" *ngFor="let conv of convocatoriasActivas">
         <div class="banner-imagen">
-          <img [src]="conv.imagen" [alt]="conv.titulo">
+          <img [src]="conv.imagen || 'assets/default.png'" [alt]="conv.titulo">
         </div>
         <div class="banner-info">
           <span class="badge-activa">Convocatoria Abierta</span>
           <h2>{{ conv.titulo }}</h2>
           <p class="banner-fechas">
             <ion-icon name="calendar-outline"></ion-icon>
-            {{ conv.fechaInicio }} — {{ conv.fechaFin }}
+            {{ conv.fecha_inicio | date:'yyyy-MM-dd' }} — {{ conv.fecha_fin | date:'yyyy-MM-dd' }}
           </p>
           <p class="banner-desc">{{ conv.descripcion }}</p>
-          <a routerLink="/contacto" class="btn-participar">Quiero participar</a>
+          <button class="btn-participar" (click)="abrirModalInscripcion(conv)">Quiero participar</button>
         </div>
       </div>
     </div>
 
     <!-- Sin convocatorias -->
-    <div class="sin-convocatorias" *ngIf="convocatoriasActivas.length === 0">
+    <div class="sin-convocatorias" *ngIf="!cargando && convocatoriasActivas.length === 0">
       <ion-icon name="megaphone-outline"></ion-icon>
       <h2>No hay convocatorias abiertas por el momento</h2>
       <p>Vuelve pronto o síguenos en redes sociales para enterarte de la próxima edición.</p>
     </div>
 
+  </div>
+
+  <!-- Modal Inscripción -->
+  <div class="modal-overlay" *ngIf="modalInscripcionAbierto" (click)="cerrarModalInscripcion()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Inscríbete a la convocatoria</h2>
+        <button class="btn-cerrar" (click)="cerrarModalInscripcion()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="conv-titulo-modal">{{ convocatoriaSeleccionada?.titulo }}</p>
+
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" [(ngModel)]="formInscripcion.nombre" placeholder="Tu nombre">
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono *</label>
+          <input type="text" [(ngModel)]="formInscripcion.telefono" placeholder="449 000 0000">
+        </div>
+
+        <div class="form-group">
+          <label>Correo (opcional)</label>
+          <input type="email" [(ngModel)]="formInscripcion.email" placeholder="correo@ejemplo.com">
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de negocio *</label>
+          <input type="text" [(ngModel)]="formInscripcion.tipo_negocio" placeholder="Ej. Comida, Artesanías, Ropa...">
+        </div>
+
+        <div class="form-group">
+          <label>Mensaje (opcional)</label>
+          <textarea [(ngModel)]="formInscripcion.mensaje" rows="3" placeholder="Cuéntanos algo más sobre tu negocio"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancelar" (click)="cerrarModalInscripcion()">Cancelar</button>
+        <button class="btn-guardar" (click)="enviarInscripcion()" [disabled]="enviandoInscripcion">
+          {{ enviandoInscripcion ? 'Enviando...' : 'Inscribirme' }}
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Footer -->

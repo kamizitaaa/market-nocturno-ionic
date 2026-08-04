@@ -251,6 +251,14 @@ ion-content {
 
     &:hover { background: #ff4444; color: #fff; }
   }
+
+  .btn-participantes {
+    background: rgba(0, 200, 255, 0.15);
+    color: #00c8ff;
+    border: 1px solid #00c8ff;
+
+    &:hover { background: #00c8ff; color: #000; }
+  }
 }
 
 .sin-datos-full {
@@ -404,4 +412,96 @@ ion-content {
   ion-icon { font-size: 16px; }
 
   &:hover { background: #ff6b00; }
+}
+
+/* ===== PARTICIPANTES ===== */
+.participantes-body {
+  gap: 0;
+}
+
+.participantes-contador {
+  color: #ffa500;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #333;
+}
+
+.participante-item {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  transition: all 0.3s;
+
+  &:hover {
+    border-color: #ffa500;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.participante-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  h4 {
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: capitalize;
+    margin: 0;
+  }
+}
+
+.participante-tipo {
+  flex-shrink: 0;
+  background: rgba(255, 165, 0, 0.15);
+  color: #ffa500;
+  border: 1px solid rgba(255, 165, 0, 0.4);
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.participante-contacto {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-bottom: 8px;
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #aaa;
+    font-size: 13px;
+    margin: 0;
+  }
+
+  ion-icon {
+    color: #ffa500;
+    font-size: 14px;
+  }
+}
+
+.participante-mensaje {
+  margin: 10px 0 0 0;
+  padding: 10px 12px;
+  background: rgba(255, 165, 0, 0.06);
+  border-left: 2px solid #ffa500;
+  border-radius: 6px;
+  color: #ccc;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.4;
 }

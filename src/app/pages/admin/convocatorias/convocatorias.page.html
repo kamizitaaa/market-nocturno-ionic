@@ -27,7 +27,7 @@
     <div class="convocatorias-grid">
       <div class="convocatoria-card" *ngFor="let conv of convocatoriasFiltradas">
         <div class="conv-imagen">
-          <img [src]="conv.imagen" [alt]="conv.titulo">
+          <img [src]="conv.imagen || 'assets/default.png'" [alt]="conv.titulo">
           <span class="badge-estado" [class.activa]="conv.activa" [class.inactiva]="!conv.activa">
             {{ conv.activa ? 'Activa' : 'Inactiva' }}
           </span>
@@ -35,7 +35,7 @@
 
         <div class="conv-body">
           <h3>{{ conv.titulo }}</h3>
-          <p class="conv-fechas">📅 {{ conv.fechaInicio }} — {{ conv.fechaFin }}</p>
+          <p class="conv-fechas">📅 {{ conv.fecha_inicio | date:'yyyy-MM-dd' }} — {{ conv.fecha_fin | date:'yyyy-MM-dd' }}</p>
           <p class="conv-desc">{{ conv.descripcion }}</p>
         </div>
 
@@ -46,6 +46,9 @@
           </label>
 
           <div class="conv-acciones">
+            <button class="btn-participantes" (click)="verParticipantes(conv)" title="Ver participantes">
+              <ion-icon name="people-outline"></ion-icon>
+            </button>
             <button class="btn-editar" (click)="abrirModalEditar(conv)">
               <ion-icon name="create-outline"></ion-icon>
             </button>
@@ -87,22 +90,31 @@
         <div class="form-row">
           <div class="form-group">
             <label>Fecha inicio</label>
-            <input type="date" [(ngModel)]="convocatoriaActual.fechaInicio">
+            <input type="date" [(ngModel)]="convocatoriaActual.fecha_inicio">
           </div>
           <div class="form-group">
             <label>Fecha fin</label>
-            <input type="date" [(ngModel)]="convocatoriaActual.fechaFin">
+            <input type="date" [(ngModel)]="convocatoriaActual.fecha_fin">
           </div>
         </div>
 
-        <div class="form-group">
-          <label>URL de imagen</label>
-          <input type="url" [(ngModel)]="convocatoriaActual.imagen" placeholder="https://...">
+        <!-- Imagen: solo se puede subir una vez que la convocatoria ya existe -->
+        <div class="form-group" *ngIf="modoEdicion">
+          <label>Imagen</label>
+          <img *ngIf="convocatoriaActual.imagen" [src]="convocatoriaActual.imagen" class="preview-imagen">
+          <input type="file" accept="image/*" (change)="onArchivoSeleccionado($event)">
+          <button
+            type="button"
+            class="btn-subir-imagen"
+            (click)="subirImagen()"
+            [disabled]="subiendoImagen || !archivoSeleccionado">
+            {{ subiendoImagen ? 'Subiendo...' : 'Subir imagen' }}
+          </button>
         </div>
 
-        <div class="preview-imagen" *ngIf="convocatoriaActual.imagen">
-          <img [src]="convocatoriaActual.imagen" alt="Preview">
-        </div>
+        <p class="ayuda-texto" *ngIf="!modoEdicion">
+          Guarda la convocatoria primero, luego podrás subirle una imagen.
+        </p>
 
         <div class="form-group form-checkbox">
           <label class="switch-label">
@@ -114,10 +126,46 @@
 
       <div class="modal-footer">
         <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn-guardar" (click)="guardarConvocatoria()">
+        <button class="btn-guardar" (click)="guardarConvocatoria()" [disabled]="guardando">
           <ion-icon name="save-outline"></ion-icon>
-          Guardar
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Participantes -->
+  <div class="modal-overlay" *ngIf="modalParticipantesAbierto" (click)="cerrarModalParticipantes()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Participantes — {{ convocatoriaParticipantesTitulo }}</h2>
+        <button class="btn-cerrar" (click)="cerrarModalParticipantes()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body participantes-body">
+        <p class="participantes-contador" *ngIf="participantes.length > 0">
+          {{ participantes.length }} {{ participantes.length === 1 ? 'participante inscrito' : 'participantes inscritos' }}
+        </p>
+
+        <div class="participante-item" *ngFor="let p of participantes">
+          <div class="participante-header">
+            <h4>{{ p.nombre }}</h4>
+            <span class="participante-tipo">{{ p.tipo_negocio }}</span>
+          </div>
+
+          <div class="participante-contacto">
+            <p><ion-icon name="call-outline"></ion-icon> {{ p.telefono }}</p>
+            <p *ngIf="p.email"><ion-icon name="mail-outline"></ion-icon> {{ p.email }}</p>
+          </div>
+
+          <p class="participante-mensaje" *ngIf="p.mensaje">{{ p.mensaje }}</p>
+        </div>
+
+        <p class="sin-datos" *ngIf="!cargandoParticipantes && participantes.length === 0">
+          Aún no hay participantes inscritos
+        </p>
       </div>
     </div>
   </div>
