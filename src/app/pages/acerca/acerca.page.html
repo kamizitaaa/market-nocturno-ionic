@@ -12,36 +12,34 @@
   </section>
 
   <!-- Nuestra Historia -->
-  <section class="section historia">
-    <div class="section-content">
-      <h2>📖 Nuestra Historia</h2>
-      <div class="historia-grid">
-        <div class="historia-texto">
-          <p>El Market Nocturno de Aguascalientes nació en 2022 con una simple pero poderosa idea: crear un espacio donde los emprendedores locales pudieran mostrar sus productos y talentos en un ambiente nocturno, mágico y lleno de vida.</p>
-          <p>Desde nuestros humildes inicios con apenas 10 emprendedores, hemos crecido hasta convertirnos en el mercado nocturno más querido de Aguascalientes, reuniendo cada viernes y sábado a cientos de visitantes en el Bosque Urbano.</p>
-          <p>Cada edición es una celebración de la creatividad, el emprendimiento y la comunidad. Somos más que un mercado — somos una familia.</p>
-        </div>
-        <div class="historia-imagen">
-          <img src="assets/elmejor.png" alt="Historia del Market Nocturno">
-        </div>
+  <section class="section historia" *ngIf="info">
+  <div class="section-content">
+    <h2>📖 {{ info.historia_titulo || 'Nuestra Historia' }}</h2>
+    <div class="historia-grid">
+      <div class="historia-texto">
+        <p>{{ info.historia_texto }}</p>
+      </div>
+      <div class="historia-imagen">
+        <img [src]="info.historia_imagen || 'assets/elmejor.png'" alt="Historia del Market Nocturno">
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- Misión y Visión -->
   <section class="section mision-vision">
     <div class="section-content">
       <h2>🎯 Misión y Visión</h2>
       <div class="mv-grid">
-        <div class="mv-card mision">
+        <div class="mv-card mision" *ngIf="info">
           <div class="mv-icon">🎪</div>
           <h3>MISIÓN</h3>
-          <p>Impulsar el emprendimiento local creando un espacio inclusivo, seguro y vibrante donde artesanos, cocineros, diseñadores y creadores puedan conectar con su comunidad, generar ingresos y hacer crecer sus sueños cada semana.</p>
+          <p>{{ info.mision }}</p>
         </div>
-        <div class="mv-card vision">
+        <div class="mv-card vision" *ngIf="info">
           <div class="mv-icon">🌟</div>
           <h3>VISIÓN</h3>
-          <p>Ser el mercado nocturno de referencia en el centro de México, reconocido por transformar vidas a través del comercio justo, la cultura local y la experiencia única que solo el Market Nocturno de Aguascalientes puede ofrecer.</p>
+          <p>{{ info.vision }}</p>
         </div>
       </div>
     </div>
@@ -70,7 +68,7 @@
       <h2>📸 Galería</h2>
       <div class="galeria-grid">
         <div class="galeria-item" *ngFor="let img of galeria">
-          <img [src]="'assets/' + img" [alt]="img">
+          <img [src]="img.url" [alt]="img.titulo">
         </div>
       </div>
     </div>

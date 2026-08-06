@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../shared/headers/public-header/header.component';
+import { AcercaService, AcercaInfo, MiembroEquipo, ImagenGaleria } from '../../services/acerca';
 
 @Component({
   selector: 'app-acerca',
@@ -15,41 +16,28 @@ import { HeaderComponent } from '../../shared/headers/public-header/header.compo
     HeaderComponent
   ]
 })
-export class AcercaPage {
+export class AcercaPage implements OnInit {
 
-  equipo = [
-    {
-      nombre: 'Ana García',
-      puesto: 'Fundadora & Directora',
-      descripcion: 'Apasionada del emprendimiento local con más de 5 años impulsando el comercio en Aguascalientes.',
-      foto: 'assets/LogoMercadoNoctuno.png'
-    },
-    {
-      nombre: 'Carlos Martínez',
-      puesto: 'Coordinador de Eventos',
-      descripcion: 'Responsable de que cada edición del Market sea una experiencia única e inolvidable.',
-      foto: 'assets/LogoMercadoNoctuno.png'
-    },
-    {
-      nombre: 'María López',
-      puesto: 'Relaciones con Emprendedores',
-      descripcion: 'El puente entre los emprendedores y el Market, siempre lista para ayudar a crecer.',
-      foto: 'assets/LogoMercadoNoctuno.png'
-    },
-    {
-      nombre: 'Roberto Díaz',
-      puesto: 'Marketing & Redes Sociales',
-      descripcion: 'El encargado de que el mundo conozca la magia del Market Nocturno en redes sociales.',
-      foto: 'assets/LogoMercadoNoctuno.png'
-    }
-  ];
+  info: AcercaInfo | null = null;
+  equipo: MiembroEquipo[] = [];
+  galeria: ImagenGaleria[] = [];
 
-  galeria = [
-    'elmejor.png',
-    'yoamomarket.png',
-    'mascaras.png',
-    'personas2.png',
-    'personas.png',
-    'pelicula.png'
-  ];
+  constructor(private acercaService: AcercaService) {}
+
+  ngOnInit() {
+    this.acercaService.getInfo().subscribe({
+      next: (data) => { this.info = data; },
+      error: () => { this.info = null; }
+    });
+
+    this.acercaService.getEquipo().subscribe({
+      next: (data) => { this.equipo = data; },
+      error: () => { this.equipo = []; }
+    });
+
+    this.acercaService.getGaleria().subscribe({
+      next: (data) => { this.galeria = data; },
+      error: () => { this.galeria = []; }
+    });
+  }
 }

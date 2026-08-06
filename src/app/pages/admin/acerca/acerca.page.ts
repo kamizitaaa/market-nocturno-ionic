@@ -2,26 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
+import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   saveOutline, addOutline, createOutline, trashOutline,
   closeOutline, imageOutline, personOutline
 } from 'ionicons/icons';
 import { AdminHeaderComponent } from '../../../shared/headers/admin-header/admin-header.component';
-
-interface MiembroEquipo {
-  id: number;
-  nombre: string;
-  puesto: string;
-  foto: string;
-  descripcion: string;
-}
-
-interface ImagenGaleria {
-  id: number;
-  url: string;
-  titulo: string;
-}
+import { AcercaService, AcercaInfo, MiembroEquipo, ImagenGaleria } from '../../../services/acerca';
 
 @Component({
   selector: 'app-acerca',
@@ -34,86 +22,179 @@ interface ImagenGaleria {
     AdminHeaderComponent
   ]
 })
-export class AcercaPage implements OnInit {
+export class AcercaPage implements OnInit, ViewWillEnter {
 
-  // ===== HISTORIA =====
-  historia = {
-    titulo: 'Nuestra Historia',
-    texto: 'El Market Nocturno nació en 2023 con la idea de dar un espacio a los emprendedores locales de Aguascalientes...',
-    imagen: 'https://via.placeholder.com/600x400'
+  cargando = true;
+
+  // ===== HISTORIA / MISIÓN / VISIÓN =====
+  info: AcercaInfo | null = null;
+  form = {
+    historia_titulo: '',
+    historia_texto: '',
+    mision: '',
+    vision: ''
   };
+  guardandoInfo = false;
 
-  // ===== MISIÓN Y VISIÓN =====
-  mision = 'Impulsar el crecimiento de los emprendedores locales, brindando un espacio seguro y accesible para exponer sus productos.';
-  vision = 'Ser el mercado nocturno más reconocido de la región, referente de apoyo al talento local.';
+  archivoHistoria: File | null = null;
+  subiendoImagenHistoria = false;
 
   // ===== EQUIPO =====
-  equipo: MiembroEquipo[] = [
-    {
-      id: 1,
-      nombre: 'Ana López',
-      puesto: 'Fundadora y Directora',
-      foto: 'https://via.placeholder.com/200x200',
-      descripcion: 'Encargada de la organización general del evento.'
-    },
-    {
-      id: 2,
-      nombre: 'Carlos Ruiz',
-      puesto: 'Coordinador de Logística',
-      foto: 'https://via.placeholder.com/200x200',
-      descripcion: 'Responsable del montaje y distribución de espacios.'
-    }
-  ];
-
+  equipo: MiembroEquipo[] = [];
   modalEquipoAbierto = false;
   modoEdicionEquipo = false;
-  miembroActual: MiembroEquipo = this.miembroVacio();
+  guardandoMiembro = false;
+  miembroActual: any = this.miembroVacio();
+  archivoFoto: File | null = null;
+  subiendoFoto = false;
 
   // ===== GALERÍA =====
-  galeria: ImagenGaleria[] = [
-    { id: 1, url: 'https://via.placeholder.com/300x300', titulo: 'Edición Enero 2026' },
-    { id: 2, url: 'https://via.placeholder.com/300x300', titulo: 'Edición Febrero 2026' }
-  ];
-
+  galeria: ImagenGaleria[] = [];
   modalGaleriaAbierto = false;
-  imagenActual: ImagenGaleria = this.imagenVacia();
+  guardandoImagen = false;
+  archivoGaleria: File | null = null;
+  tituloGaleria = '';
 
-  constructor() {
+  constructor(private acercaService: AcercaService) {
     addIcons({
       saveOutline, addOutline, createOutline, trashOutline,
       closeOutline, imageOutline, personOutline
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.cargarTodo();
+  }
 
-  // ===== ACCIONES HISTORIA =====
+  ionViewWillEnter() {
+    this.cargarTodo();
+  }
+
+  cargarTodo() {
+    this.cargarInfo();
+    this.cargarEquipo();
+    this.cargarGaleria();
+  }
+
+  cargarInfo() {
+    this.cargando = true;
+    this.acercaService.getInfo().subscribe({
+      next: (data) => {
+        this.info = data;
+        this.form = {
+          historia_titulo: data.historia_titulo || '',
+          historia_texto: data.historia_texto || '',
+          mision: data.mision || '',
+          vision: data.vision || ''
+        };
+        this.cargando = false;
+      },
+      error: () => { this.cargando = false; }
+    });
+  }
+
+  cargarEquipo() {
+    this.acercaService.getEquipo().subscribe({
+      next: (data) => { this.equipo = data; },
+      error: () => { this.equipo = []; }
+    });
+  }
+
+  cargarGaleria() {
+    this.acercaService.getGaleria().subscribe({
+      next: (data) => { this.galeria = data; },
+      error: () => { this.galeria = []; }
+    });
+  }
+
+  // ===== HISTORIA =====
   guardarHistoria() {
-    console.log('Historia guardada:', this.historia);
-    // Aquí luego llamas al backend
-    alert('Historia guardada correctamente');
+    this.guardandoInfo = true;
+    this.acercaService.updateInfo({
+      historia_titulo: this.form.historia_titulo,
+      historia_texto: this.form.historia_texto
+    }).subscribe({
+      next: () => {
+        this.guardandoInfo = false;
+        alert('Historia guardada correctamente');
+        this.cargarInfo();
+      },
+      error: () => {
+        this.guardandoInfo = false;
+        alert('No se pudo guardar la historia');
+      }
+    });
   }
 
-  // ===== ACCIONES MISIÓN Y VISIÓN =====
+  onArchivoHistoria(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.archivoHistoria = input.files[0];
+    }
+  }
+
+  subirImagenHistoria() {
+    if (!this.archivoHistoria) {
+      alert('Selecciona una imagen primero');
+      return;
+    }
+
+    this.subiendoImagenHistoria = true;
+    this.acercaService.subirImagenHistoria(this.archivoHistoria).subscribe({
+      next: () => {
+        this.subiendoImagenHistoria = false;
+        this.archivoHistoria = null;
+        this.cargarInfo();
+      },
+      error: () => {
+        this.subiendoImagenHistoria = false;
+        alert('No se pudo subir la imagen');
+      }
+    });
+  }
+
+  // ===== MISIÓN Y VISIÓN =====
   guardarMisionVision() {
-    console.log('Misión y visión guardadas:', { mision: this.mision, vision: this.vision });
-    alert('Misión y visión guardadas correctamente');
+    this.guardandoInfo = true;
+    this.acercaService.updateInfo({
+      mision: this.form.mision,
+      vision: this.form.vision
+    }).subscribe({
+      next: () => {
+        this.guardandoInfo = false;
+        alert('Misión y visión guardadas correctamente');
+        this.cargarInfo();
+      },
+      error: () => {
+        this.guardandoInfo = false;
+        alert('No se pudo guardar');
+      }
+    });
   }
 
-  // ===== ACCIONES EQUIPO =====
-  miembroVacio(): MiembroEquipo {
-    return { id: 0, nombre: '', puesto: '', foto: '', descripcion: '' };
+  // ===== EQUIPO =====
+  miembroVacio() {
+    return { nombre: '', puesto: '', descripcion: '', orden: 0 };
   }
 
   abrirModalNuevoMiembro() {
     this.modoEdicionEquipo = false;
     this.miembroActual = this.miembroVacio();
+    this.archivoFoto = null;
     this.modalEquipoAbierto = true;
   }
 
   abrirModalEditarMiembro(miembro: MiembroEquipo) {
     this.modoEdicionEquipo = true;
-    this.miembroActual = { ...miembro };
+    this.miembroActual = {
+      id: miembro.id,
+      nombre: miembro.nombre,
+      puesto: miembro.puesto,
+      descripcion: miembro.descripcion,
+      orden: miembro.orden,
+      foto: miembro.foto
+    };
+    this.archivoFoto = null;
     this.modalEquipoAbierto = true;
   }
 
@@ -122,31 +203,82 @@ export class AcercaPage implements OnInit {
   }
 
   guardarMiembro() {
-    if (!this.miembroActual.nombre || !this.miembroActual.puesto) return;
+    if (!this.miembroActual.nombre || !this.miembroActual.puesto) {
+      alert('Nombre y puesto son obligatorios');
+      return;
+    }
+
+    this.guardandoMiembro = true;
 
     if (this.modoEdicionEquipo) {
-      const index = this.equipo.findIndex(m => m.id === this.miembroActual.id);
-      if (index !== -1) this.equipo[index] = { ...this.miembroActual };
+      const { id, foto, ...datos } = this.miembroActual;
+      this.acercaService.actualizarMiembro(id, datos).subscribe({
+        next: () => {
+          this.guardandoMiembro = false;
+          this.cerrarModalEquipo();
+          this.cargarEquipo();
+        },
+        error: () => {
+          this.guardandoMiembro = false;
+          alert('No se pudo actualizar el integrante');
+        }
+      });
     } else {
-      const nuevoId = this.equipo.length > 0 ? Math.max(...this.equipo.map(m => m.id)) + 1 : 1;
-      this.equipo.push({ ...this.miembroActual, id: nuevoId });
+      this.acercaService.crearMiembro(this.miembroActual).subscribe({
+        next: () => {
+          this.guardandoMiembro = false;
+          this.cerrarModalEquipo();
+          this.cargarEquipo();
+        },
+        error: () => {
+          this.guardandoMiembro = false;
+          alert('No se pudo crear el integrante');
+        }
+      });
     }
-    this.cerrarModalEquipo();
   }
 
   eliminarMiembro(miembro: MiembroEquipo) {
     if (confirm(`¿Eliminar a "${miembro.nombre}" del equipo?`)) {
-      this.equipo = this.equipo.filter(m => m.id !== miembro.id);
+      this.acercaService.eliminarMiembro(miembro.id).subscribe({
+        next: () => this.cargarEquipo(),
+        error: () => alert('No se pudo eliminar el integrante')
+      });
     }
   }
 
-  // ===== ACCIONES GALERÍA =====
-  imagenVacia(): ImagenGaleria {
-    return { id: 0, url: '', titulo: '' };
+  onArchivoFoto(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.archivoFoto = input.files[0];
+    }
   }
 
+  subirFoto() {
+    if (!this.archivoFoto || !this.miembroActual.id) {
+      alert('Selecciona una foto primero');
+      return;
+    }
+
+    this.subiendoFoto = true;
+    this.acercaService.subirFotoMiembro(this.miembroActual.id, this.archivoFoto).subscribe({
+      next: (res) => {
+        this.subiendoFoto = false;
+        this.archivoFoto = null;
+        this.miembroActual.foto = res.miembro.foto;
+        this.cargarEquipo();
+      },
+      error: () => {
+        this.subiendoFoto = false;
+        alert('No se pudo subir la foto');
+      }
+    });
+  }
+
+  // ===== GALERÍA =====
   abrirModalGaleria() {
-    this.imagenActual = this.imagenVacia();
+    this.archivoGaleria = null;
+    this.tituloGaleria = '';
     this.modalGaleriaAbierto = true;
   }
 
@@ -154,16 +286,39 @@ export class AcercaPage implements OnInit {
     this.modalGaleriaAbierto = false;
   }
 
+  onArchivoGaleria(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.archivoGaleria = input.files[0];
+    }
+  }
+
   agregarImagenGaleria() {
-    if (!this.imagenActual.url) return;
-    const nuevoId = this.galeria.length > 0 ? Math.max(...this.galeria.map(g => g.id)) + 1 : 1;
-    this.galeria.push({ ...this.imagenActual, id: nuevoId });
-    this.cerrarModalGaleria();
+    if (!this.archivoGaleria) {
+      alert('Selecciona una imagen');
+      return;
+    }
+
+    this.guardandoImagen = true;
+    this.acercaService.agregarImagenGaleria(this.archivoGaleria, this.tituloGaleria).subscribe({
+      next: () => {
+        this.guardandoImagen = false;
+        this.cerrarModalGaleria();
+        this.cargarGaleria();
+      },
+      error: () => {
+        this.guardandoImagen = false;
+        alert('No se pudo agregar la imagen');
+      }
+    });
   }
 
   eliminarImagenGaleria(imagen: ImagenGaleria) {
     if (confirm('¿Eliminar esta imagen de la galería?')) {
-      this.galeria = this.galeria.filter(g => g.id !== imagen.id);
+      this.acercaService.eliminarImagenGaleria(imagen.id).subscribe({
+        next: () => this.cargarGaleria(),
+        error: () => alert('No se pudo eliminar la imagen')
+      });
     }
   }
 }

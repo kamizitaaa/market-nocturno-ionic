@@ -8,6 +8,7 @@ import {
   closeOutline, mailOutline
 } from 'ionicons/icons';
 import { AdminHeaderComponent } from '../../../shared/headers/admin-header/admin-header.component';
+import { ContactoService, ContactoMensaje } from '../../../services/contacto';
 
 interface SolicitudContacto {
   id: number;
@@ -32,38 +33,45 @@ interface SolicitudContacto {
 export class ContactoPage implements OnInit {
 
   textoBusqueda = '';
+  cargando = false;
 
-  solicitudes: SolicitudContacto[] = [
-    {
-      id: 1,
-      nombre: 'Jorge Hernández',
-      email: 'jorge.hdz@gmail.com',
-      asunto: '¿Cómo puedo registrar mi emprendimiento?',
-      mensaje: 'Hola, tengo un negocio de postres y me gustaría participar en el próximo Market Nocturno. ¿Qué requisitos necesito?',
-      fecha: '2026-07-20'
-    },
-    {
-      id: 2,
-      nombre: 'Paola Sánchez',
-      email: 'paola.sanchez@hotmail.com',
-      asunto: 'Duda sobre horarios',
-      mensaje: '¿A qué hora abre el evento este fin de semana? Vi que cambió respecto al mes pasado.',
-      fecha: '2026-07-22'
-    }
-  ];
+  solicitudes: SolicitudContacto[] = [];
 
   // Modal detalle
   modalAbierto = false;
   solicitudSeleccionada: SolicitudContacto | null = null;
 
-  constructor() {
+  constructor(private contactoService: ContactoService) {
     addIcons({
       searchOutline, trashOutline, refreshOutline, eyeOutline,
       closeOutline, mailOutline
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.cargarSolicitudes();
+  }
+
+  cargarSolicitudes() {
+    this.cargando = true;
+    this.contactoService.getAllAdmin().subscribe({
+      next: (mensajes: ContactoMensaje[]) => {
+        this.solicitudes = mensajes.map(m => ({
+          id: m.id,
+          nombre: m.nombre,
+          email: m.email,
+          asunto: m.asunto,
+          mensaje: m.mensaje,
+          fecha: m.created_at
+        }));
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar solicitudes de contacto:', err);
+        this.cargando = false;
+      }
+    });
+  }
 
   get solicitudesFiltradas(): SolicitudContacto[] {
     if (!this.textoBusqueda) return this.solicitudes;
@@ -87,16 +95,23 @@ export class ContactoPage implements OnInit {
 
   eliminarSolicitud(solicitud: SolicitudContacto) {
     const confirmar = confirm(`¿Eliminar el mensaje de "${solicitud.nombre}"?`);
-    if (confirmar) {
-      this.solicitudes = this.solicitudes.filter(s => s.id !== solicitud.id);
-      if (this.solicitudSeleccionada?.id === solicitud.id) {
-        this.cerrarModal();
+    if (!confirmar) return;
+
+    this.contactoService.eliminar(solicitud.id).subscribe({
+      next: () => {
+        this.solicitudes = this.solicitudes.filter(s => s.id !== solicitud.id);
+        if (this.solicitudSeleccionada?.id === solicitud.id) {
+          this.cerrarModal();
+        }
+      },
+      error: (err) => {
+        console.error('Error al eliminar mensaje de contacto:', err);
+        alert('No se pudo eliminar el mensaje. Intenta de nuevo.');
       }
-    }
+    });
   }
 
   recargar() {
-    // Aquí luego conectas la llamada real al backend
-    console.log('Recargando solicitudes de contacto...');
+    this.cargarSolicitudes();
   }
 }

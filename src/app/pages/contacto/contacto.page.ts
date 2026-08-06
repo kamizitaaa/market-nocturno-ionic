@@ -6,6 +6,7 @@ import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personOutline, mailOutline, chatboxOutline, sendOutline } from 'ionicons/icons';
 import { HeaderComponent } from '../../shared/headers/public-header/header.component';
+import { ContactoService } from '../../services/contacto';
 
 @Component({
   selector: 'app-contacto',
@@ -24,8 +25,9 @@ export class ContactoPage {
   email = '';
   asunto = '';
   mensaje = '';
+  enviando = false;
 
-  constructor() {
+  constructor(private contactoService: ContactoService) {
     addIcons({ personOutline, mailOutline, chatboxOutline, sendOutline });
   }
 
@@ -35,17 +37,27 @@ export class ContactoPage {
       return;
     }
 
-    console.log('Mensaje enviado:', {
+    this.enviando = true;
+
+    this.contactoService.enviar({
       nombre: this.nombre,
       email: this.email,
       asunto: this.asunto,
       mensaje: this.mensaje
+    }).subscribe({
+      next: () => {
+        this.enviando = false;
+        alert('¡Mensaje enviado! Nos pondremos en contacto contigo pronto.');
+        this.nombre = '';
+        this.email = '';
+        this.asunto = '';
+        this.mensaje = '';
+      },
+      error: (err) => {
+        this.enviando = false;
+        console.error('Error al enviar mensaje de contacto:', err);
+        alert('Ocurrió un error al enviar tu mensaje. Intenta de nuevo.');
+      }
     });
-
-    alert('¡Mensaje enviado! Nos pondremos en contacto contigo pronto.');
-    this.nombre = '';
-    this.email = '';
-    this.asunto = '';
-    this.mensaje = '';
   }
 }

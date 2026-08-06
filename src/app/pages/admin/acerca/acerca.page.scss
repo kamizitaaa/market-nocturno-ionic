@@ -364,3 +364,50 @@ ion-content {
 
   &:hover { background: #ff6b00; }
 }
+
+.imagen-historia-group {
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #333;
+
+  input[type="file"] {
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+}
+
+.btn-subir-imagen {
+  background: transparent;
+  border: 1.5px solid #ffa500;
+  color: #ffa500;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover:not(:disabled) {
+    background: #ffa500;
+    color: #000;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.ayuda-texto {
+  color: #888;
+  font-size: 12px;
+  font-style: italic;
+  margin: 5px 0 15px;
+}
+
+.btn-guardar:disabled,
+.btn-guardar-modal:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
