@@ -9,6 +9,7 @@
       <a routerLink="/admin/acerca" class="nav-link" [class.active]="isActive('/admin/acerca')">ACERCA DE NOSOTROS</a>
       <a routerLink="/admin/contacto" class="nav-link" [class.active]="isActive('/admin/contacto')">CONTÁCTANOS</a>
       <a routerLink="/admin/convocatorias" class="nav-link" [class.active]="isActive('/admin/convocatorias')">CONVOCATORIAS</a>
+      <a *ngIf="rolActual === 'superadmin'" routerLink="/admin/sesiones" class="nav-link" [class.active]="isActive('/admin/sesiones')">SESIONES</a>
     </div>
     <ion-buttons slot="end">
       <ion-button routerLink="/admin/perfil">

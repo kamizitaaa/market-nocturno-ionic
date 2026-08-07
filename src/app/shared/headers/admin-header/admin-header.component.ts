@@ -21,6 +21,7 @@ import { AuthService } from '../../../services/auth';
 export class AdminHeaderComponent implements OnInit {
 
   nombreAdmin = '';
+  rolActual = '';
 
   constructor(
     private authService: AuthService,
@@ -31,6 +32,7 @@ export class AdminHeaderComponent implements OnInit {
 
   async ngOnInit() {
     this.nombreAdmin = await this.authService.getNombre() || 'Admin';
+    this.rolActual = await this.authService.getRol() || '';
   }
 
   isActive(path: string): boolean {

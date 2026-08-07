@@ -1,0 +1,72 @@
+<app-admin-header></app-admin-header>
+
+<ion-content [fullscreen]="true">
+  <div class="admin-container">
+
+    <!-- Header -->
+    <div class="admin-header">
+      <h1>✨ SESIONES ACTIVAS ✨</h1>
+      <p>Supervisa y cierra las sesiones de administradores y emprendedores</p>
+    </div>
+
+    <div class="busqueda-row">
+      <div class="busqueda-input">
+        <ion-icon name="search-outline"></ion-icon>
+        <input type="text" [(ngModel)]="textoBusqueda" placeholder="Busca por nombre o correo" class="busqueda-field">
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="tabla-section">
+      <div class="tabla-header">
+        <h2>✨ Sesiones Activas</h2>
+        <button class="btn-recargar" (click)="recargar()">
+          <ion-icon name="refresh-outline"></ion-icon>
+          Recargar
+        </button>
+      </div>
+      <div class="tabla-container">
+        <table>
+          <thead>
+            <tr>
+              <th>USUARIO</th>
+              <th>ROL</th>
+              <th>NAVEGADOR</th>
+              <th>IP</th>
+              <th>INICIO DE SESIÓN</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of sesionesFiltradas">
+              <td>
+                <div class="usuario-info">
+                  <strong>{{ nombreUsuario(s) }}</strong>
+                  <span class="usuario-email">{{ s.user?.email }}</span>
+                </div>
+              </td>
+              <td><span [class]="'badge rol-' + s.user?.role">{{ s.user?.role }}</span></td>
+              <td>
+                <ion-icon [name]="esMovil(s.navegador) ? 'phone-portrait-outline' : 'desktop-outline'"></ion-icon>
+                {{ navegadorLegible(s.navegador) }}
+              </td>
+              <td>{{ s.ip_address }}</td>
+              <td>{{ s.fecha_inicio | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="acciones">
+                <button class="btn-cerrar-sesion" (click)="cerrarSesion(s)">
+                  <ion-icon name="log-out-outline"></ion-icon>
+                  Cerrar sesión
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="sesionesFiltradas.length === 0">
+              <td colspan="6" class="sin-datos">No hay sesiones activas</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

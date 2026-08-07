@@ -93,6 +93,10 @@ export const routes: Routes = [
         path: 'contacto',
         loadComponent: () => import('./pages/admin/contacto/contacto.page').then(m => m.ContactoPage)
       },
+      {
+      path: 'sesiones',
+      loadComponent: () => import('./pages/admin/sesiones/sesiones.page').then( m => m.SesionesPage)
+      },
     ]
   },
 ];

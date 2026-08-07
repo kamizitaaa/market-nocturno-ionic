@@ -1,0 +1,182 @@
+ion-content {
+  --background: #000;
+  color: #fff;
+}
+
+.admin-container {
+  padding: 30px 40px;
+}
+
+.admin-header {
+  text-align: center;
+  background: linear-gradient(135deg, #1a1a1a, #2a1a0a);
+  border: 2px solid #ffa500;
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
+
+  h1 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #ffa500;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #aaa;
+    font-size: 14px;
+  }
+}
+
+.busqueda-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.busqueda-input {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 25px;
+  padding: 10px 15px;
+  gap: 10px;
+
+  ion-icon { color: #aaa; font-size: 18px; }
+
+  .busqueda-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 14px;
+
+    &::placeholder { color: #555; }
+  }
+}
+
+.tabla-section {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.tabla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+
+  h2 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffa500;
+  }
+}
+
+.btn-recargar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid #555;
+  border-radius: 20px;
+  color: #aaa;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+
+  ion-icon { font-size: 14px; }
+
+  &:hover { border-color: #ffa500; color: #ffa500; }
+}
+
+.tabla-container { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead tr {
+    background: #000;
+    border-bottom: 2px solid #ffa500;
+  }
+
+  th {
+    padding: 10px 12px;
+    text-align: left;
+    color: #ffa500;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  td {
+    padding: 10px 12px;
+    color: #ccc;
+    font-size: 13px;
+    border-bottom: 1px solid #222;
+
+    ion-icon { font-size: 14px; vertical-align: middle; margin-right: 4px; }
+  }
+
+  tr:hover td { background: #222; }
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+
+  strong { color: #fff; font-size: 13px; }
+  .usuario-email { color: #888; font-size: 11px; }
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: capitalize;
+
+  &.rol-admin {
+    background: rgba(255, 165, 0, 0.15);
+    color: #ffa500;
+    border: 1px solid #ffa500;
+  }
+
+  &.rol-emprendedor {
+    background: rgba(255, 20, 147, 0.15);
+    color: #ff1493;
+    border: 1px solid #ff1493;
+  }
+}
+
+.btn-cerrar-sesion {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 0, 0, 0.15);
+  color: #ff4444;
+  border: 1px solid #ff4444;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  ion-icon { font-size: 14px; }
+
+  &:hover { background: #ff4444; color: #fff; }
+}
+
+.sin-datos {
+  text-align: center;
+  color: #555;
+  padding: 20px;
+  font-style: italic;
+}
