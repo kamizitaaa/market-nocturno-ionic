@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
 import { Preferences } from '@capacitor/preferences';
 import { Usuario } from '../models/usuario.model';
+import { environment } from '../../environments/environment';
 
 const TOKEN_KEY = 'auth_token';
 const ROL_KEY = 'rol';
@@ -11,7 +12,7 @@ const ROL_KEY = 'rol';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
