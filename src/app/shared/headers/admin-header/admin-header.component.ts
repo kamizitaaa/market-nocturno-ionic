@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import {
   IonHeader, IonToolbar, IonButtons, IonButton, IonIcon
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { logOutOutline, personCircleOutline } from 'ionicons/icons';
+import { logOutOutline, personCircleOutline, menuOutline, closeOutline } from 'ionicons/icons';
 import { AuthService } from '../../../services/auth';
 
 @Component({
@@ -22,21 +23,32 @@ export class AdminHeaderComponent implements OnInit {
 
   nombreAdmin = '';
   rolActual = '';
+  menuMovilAbierto = false;
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {
-    addIcons({ logOutOutline, personCircleOutline });
+    addIcons({ logOutOutline, personCircleOutline, menuOutline, closeOutline });
   }
 
   async ngOnInit() {
     this.nombreAdmin = await this.authService.getNombre() || 'Admin';
     this.rolActual = await this.authService.getRol() || '';
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.menuMovilAbierto = false;
+    });
   }
 
   isActive(path: string): boolean {
     return this.router.url.startsWith(path);
+  }
+
+  toggleMenuMovil() {
+    this.menuMovilAbierto = !this.menuMovilAbierto;
   }
 
   async logout() {

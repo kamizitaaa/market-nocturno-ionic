@@ -1,0 +1,78 @@
+<app-header></app-header>
+
+<ion-content [fullscreen]="true">
+  <div class="login-container">
+    <div class="login-box">
+
+      <!-- Paso 1: pedir correo -->
+      <ng-container *ngIf="paso === 1">
+        <h2>RECUPERAR CONTRASEÑA</h2>
+        <p class="subtitle">Ingresa tu correo y te enviaremos un código de verificación</p>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <ion-icon name="mail-outline"></ion-icon>
+            <input type="email" [(ngModel)]="email" placeholder="correo@ejemplo.com" class="custom-input">
+          </div>
+        </div>
+
+        <p class="mfa-error" *ngIf="error">{{ error }}</p>
+
+        <button class="btn-login" (click)="solicitarCodigo()" [disabled]="enviandoCorreo">
+          <ion-icon *ngIf="enviandoCorreo" name="refresh-outline" class="spin"></ion-icon>
+          {{ enviandoCorreo ? 'Enviando...' : '→ Enviar código' }}
+        </button>
+
+        <p class="register-link">
+          <a routerLink="/login">Volver al inicio de sesión</a>
+        </p>
+      </ng-container>
+
+      <!-- Paso 2: código + nueva contraseña -->
+      <ng-container *ngIf="paso === 2">
+        <h2>NUEVA CONTRASEÑA</h2>
+        <p class="subtitle">Ingresa el código que llegó a tu correo y tu nueva contraseña</p>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+            <input
+              type="text"
+              inputmode="numeric"
+              maxlength="6"
+              [(ngModel)]="codigo"
+              placeholder="Código de 6 dígitos"
+              class="custom-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="Nueva contraseña" class="custom-input">
+            <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'" (click)="togglePassword()" class="eye-icon"></ion-icon>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-icon">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="confirmarPassword" placeholder="Confirmar contraseña" class="custom-input">
+          </div>
+        </div>
+
+        <p class="mfa-error" *ngIf="error">{{ error }}</p>
+
+        <button class="btn-login" (click)="restablecer()" [disabled]="restableciendo">
+          <ion-icon *ngIf="restableciendo" name="refresh-outline" class="spin"></ion-icon>
+          {{ restableciendo ? 'Actualizando...' : '→ Cambiar contraseña' }}
+        </button>
+
+        <p class="register-link">
+          <a (click)="volverAlPaso1()">¿No te llegó el código? Solicitar de nuevo</a>
+        </p>
+      </ng-container>
+
+    </div>
+  </div>
+</ion-content>

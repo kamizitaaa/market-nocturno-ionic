@@ -29,6 +29,7 @@ export class EmprendimientosPage implements OnInit {
   categoriaFiltro = 'todas';
   estadoFiltro = 'todos';
   cargando = true;
+  cargandoRecarga = false;
 
   emprendimientos: Emprendimiento[] = [];
   categorias: Categoria[] = [];
@@ -55,14 +56,18 @@ export class EmprendimientosPage implements OnInit {
 
   cargarEmprendimientos() {
     this.cargando = true;
+    this.cargandoRecarga = true;
+
     this.emprendimientoService.getAllAdmin().subscribe({
       next: (data) => {
         this.emprendimientos = data;
         this.cargando = false;
+        setTimeout(() => this.cargandoRecarga = false, 400);
       },
       error: () => {
         this.emprendimientos = [];
         this.cargando = false;
+        setTimeout(() => this.cargandoRecarga = false, 400);
       }
     });
   }

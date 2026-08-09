@@ -411,3 +411,81 @@ ion-content {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+// =========================================================
+// RESPONSIVE - TABLET (≤900px)
+// =========================================================
+@media (max-width: 900px) {
+  .admin-container {
+    padding: 20px 16px;
+    gap: 18px;
+  }
+
+  .admin-header {
+    padding: 18px 15px;
+
+    h1 { font-size: 22px; }
+    p { font-size: 13px; }
+  }
+
+  .seccion-card {
+    padding: 18px;
+  }
+
+  .seccion-header {
+    flex-wrap: wrap;
+    gap: 10px;
+
+    h2 { font-size: 16px; }
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .modal-card {
+    width: 95%;
+  }
+}
+
+// =========================================================
+// RESPONSIVE - MÓVIL (≤600px)
+// =========================================================
+@media (max-width: 600px) {
+  .equipo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .galeria-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .btn-guardar,
+  .btn-agregar {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal-header, .modal-body, .modal-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+
+    button { width: 100%; justify-content: center; }
+  }
+
+  .preview-imagen {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .equipo-grid,
+  .galeria-grid {
+    grid-template-columns: 1fr;
+  }
+}

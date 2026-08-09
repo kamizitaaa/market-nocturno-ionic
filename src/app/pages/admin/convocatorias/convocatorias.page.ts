@@ -27,6 +27,7 @@ export class ConvocatoriasPage implements OnInit, ViewWillEnter {
 
   textoBusqueda = '';
   cargando = true;
+  cargandoRecarga = false;
 
   convocatorias: Convocatoria[] = [];
 
@@ -63,14 +64,18 @@ export class ConvocatoriasPage implements OnInit, ViewWillEnter {
 
   cargarConvocatorias() {
     this.cargando = true;
+    this.cargandoRecarga = true;
+
     this.convocatoriaService.getAllAdmin().subscribe({
       next: (data) => {
         this.convocatorias = data;
         this.cargando = false;
+        setTimeout(() => this.cargandoRecarga = false, 400);
       },
       error: () => {
         this.convocatorias = [];
         this.cargando = false;
+        setTimeout(() => this.cargandoRecarga = false, 400);
       }
     });
   }

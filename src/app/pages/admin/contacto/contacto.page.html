@@ -21,7 +21,7 @@
       <div class="tabla-header">
         <h2>✨ Mensajes Recibidos</h2>
         <button class="btn-recargar" (click)="recargar()">
-          <ion-icon name="refresh-outline"></ion-icon>
+          <ion-icon name="refresh-outline" [class.spin]="cargandoRecarga"></ion-icon>
           Recargar
         </button>
       </div>

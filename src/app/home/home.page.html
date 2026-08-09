@@ -26,7 +26,7 @@
       <div class="carousel-track-container">
         <div class="carousel-track" [ngStyle]="getTrackStyle()">
           <div class="carousel-slide" *ngFor="let img of carouselImages">
-            <img [src]="'assets/' + img" [alt]="img">
+            <img [src]="img.imagen" [alt]="img.titulo || 'Market Nocturno'">
           </div>
         </div>
       </div>

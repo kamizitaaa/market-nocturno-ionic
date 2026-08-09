@@ -4,7 +4,7 @@
       <img src="assets/LogoMercadoNoctuno.png" height="60" alt="Market Nocturno" [routerLink]="rolUsuario === 'emprendedor' ? '/mi-emprendimiento' : '/home'" style="cursor:pointer">
     </ion-buttons>
 
-    <!-- Navegación pública: solo para quienes NO son emprendedores -->
+    <!-- Navegación pública: solo para quienes NO son emprendedores (versión escritorio) -->
     <div class="nav-links" *ngIf="rolUsuario !== 'emprendedor'">
       <a routerLink="/home" class="nav-link" [class.active]="isActive('/home')">INICIO</a>
       <a routerLink="/emprendimientos" class="nav-link" [class.active]="isActive('/emprendimientos')">EMPRENDIMIENTOS</a>
@@ -13,13 +13,13 @@
       <a routerLink="/convocatorias" class="nav-link" [class.active]="isActive('/convocatorias')">CONVOCATORIAS</a>
     </div>
 
-    <!-- Navegación exclusiva de emprendedor -->
+    <!-- Navegación exclusiva de emprendedor (versión escritorio) -->
     <div class="nav-links" *ngIf="rolUsuario === 'emprendedor'">
       <a routerLink="/mi-emprendimiento" class="nav-link" [class.active]="isActive('/mi-emprendimiento')">MI EMPRENDIMIENTO</a>
       <a routerLink="/pedidos-emprendimiento" class="nav-link" [class.active]="isActive('/pedidos-emprendimiento')">PEDIDOS</a>
     </div>
 
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" class="acciones-escritorio">
       <!-- Sin sesión -->
       <ng-container *ngIf="!isLoggedIn">
         <a routerLink="/login" class="login-btn">
@@ -63,5 +63,56 @@
         </ion-popover>
       </ng-container>
     </ion-buttons>
+
+    <!-- Botón hamburguesa: solo visible en móvil -->
+    <ion-buttons slot="end" class="acciones-movil">
+      <ion-button *ngIf="isLoggedIn && rolUsuario !== 'emprendedor'" (click)="verCarrito()" class="btn-carrito">
+        <span class="carrito-icono-wrapper">
+          <ion-icon name="cart-outline"></ion-icon>
+          <span class="carrito-badge" *ngIf="cantidadCarrito > 0">{{ cantidadCarrito }}</span>
+        </span>
+      </ion-button>
+      <ion-button (click)="toggleMenuMovil()" class="btn-hamburguesa">
+        <ion-icon [name]="menuMovilAbierto ? 'close-outline' : 'menu-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
+
+  <!-- Menú desplegable móvil -->
+  <div class="menu-movil" *ngIf="menuMovilAbierto">
+    <ng-container *ngIf="rolUsuario !== 'emprendedor'">
+      <a routerLink="/home" class="nav-link-movil" [class.active]="isActive('/home')">INICIO</a>
+      <a routerLink="/emprendimientos" class="nav-link-movil" [class.active]="isActive('/emprendimientos')">EMPRENDIMIENTOS</a>
+      <a routerLink="/acerca" class="nav-link-movil" [class.active]="isActive('/acerca')">ACERCA DE NOSOTROS</a>
+      <a routerLink="/contacto" class="nav-link-movil" [class.active]="isActive('/contacto')">CONTÁCTANOS</a>
+      <a routerLink="/convocatorias" class="nav-link-movil" [class.active]="isActive('/convocatorias')">CONVOCATORIAS</a>
+    </ng-container>
+
+    <ng-container *ngIf="rolUsuario === 'emprendedor'">
+      <a routerLink="/mi-emprendimiento" class="nav-link-movil" [class.active]="isActive('/mi-emprendimiento')">MI EMPRENDIMIENTO</a>
+      <a routerLink="/pedidos-emprendimiento" class="nav-link-movil" [class.active]="isActive('/pedidos-emprendimiento')">PEDIDOS</a>
+    </ng-container>
+
+    <div class="menu-movil-separador"></div>
+
+    <a *ngIf="!isLoggedIn" routerLink="/login" class="nav-link-movil">
+      <ion-icon name="person-outline"></ion-icon>
+      INICIAR SESIÓN
+    </a>
+
+    <ng-container *ngIf="isLoggedIn">
+      <a routerLink="/perfil" class="nav-link-movil">
+        <ion-icon name="person-outline"></ion-icon>
+        Mi perfil
+      </a>
+      <a *ngIf="rolUsuario !== 'emprendedor'" routerLink="/mis-pedidos" class="nav-link-movil">
+        <ion-icon name="receipt-outline"></ion-icon>
+        Mis pedidos
+      </a>
+      <a (click)="cerrarSesion()" class="nav-link-movil">
+        <ion-icon name="log-out-outline"></ion-icon>
+        Cerrar sesión
+      </a>
+    </ng-container>
+  </div>
 </ion-header>

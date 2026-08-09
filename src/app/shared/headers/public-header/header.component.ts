@@ -9,7 +9,8 @@ import {
 import { addIcons } from 'ionicons';
 import {
   personOutline, cartOutline, personCircleOutline,
-  chevronDownOutline, chevronUpOutline, logOutOutline, receiptOutline
+  chevronDownOutline, chevronUpOutline, logOutOutline, receiptOutline,
+  menuOutline, closeOutline
 } from 'ionicons/icons';
 import { AuthService } from '../../../services/auth';
 import { CarritoService } from '../../../services/carrito';
@@ -32,6 +33,7 @@ export class HeaderComponent implements OnInit {
   rolUsuario = '';
   menuAbierto = false;
   cantidadCarrito = 0;
+  menuMovilAbierto = false;
 
   constructor(
     private authService: AuthService,
@@ -40,14 +42,14 @@ export class HeaderComponent implements OnInit {
   ) {
     addIcons({
       personOutline, cartOutline, personCircleOutline,
-      chevronDownOutline, chevronUpOutline, logOutOutline, receiptOutline
+      chevronDownOutline, chevronUpOutline, logOutOutline, receiptOutline,
+      menuOutline, closeOutline
     });
   }
 
   ngOnInit() {
     this.checkAuth();
 
-    // Se suscribe una sola vez: cada vez que el contador cambia en cualquier parte de la app, se actualiza aquí
     this.carritoService.cantidad$.subscribe(cantidad => {
       this.cantidadCarrito = cantidad;
     });
@@ -56,6 +58,7 @@ export class HeaderComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.checkAuth();
+      this.menuMovilAbierto = false; // cierra el menú móvil al navegar
     });
   }
 
@@ -65,7 +68,6 @@ export class HeaderComponent implements OnInit {
       this.nombreUsuario = await this.authService.getNombre() || 'Usuario';
       this.rolUsuario = await this.authService.getRol() || '';
 
-      // Solo carga el contador si el usuario puede tener carrito (no aplica a emprendedores)
       if (this.rolUsuario !== 'emprendedor') {
         this.carritoService.refrescarContador();
       }
@@ -84,12 +86,17 @@ export class HeaderComponent implements OnInit {
     this.menuAbierto = !this.menuAbierto;
   }
 
+  toggleMenuMovil() {
+    this.menuMovilAbierto = !this.menuMovilAbierto;
+  }
+
   verCarrito() {
     if (this.isLoggedIn) {
       this.router.navigate(['/carrito']);
     } else {
       this.router.navigate(['/login']);
     }
+    this.menuMovilAbierto = false;
   }
 
   async cerrarSesion() {
@@ -98,6 +105,7 @@ export class HeaderComponent implements OnInit {
     this.nombreUsuario = '';
     this.rolUsuario = '';
     this.carritoService.resetContador();
+    this.menuMovilAbierto = false;
     this.router.navigate(['/login']);
   }
 }

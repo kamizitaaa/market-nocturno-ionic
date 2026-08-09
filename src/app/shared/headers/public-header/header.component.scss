@@ -9,18 +9,20 @@ ion-header ion-toolbar {
 
 .nav-links {
   display: flex;
-  gap: 45px;
+  gap: clamp(14px, 2vw, 28px);
   align-items: center;
   flex: 1;
   justify-content: center;
+  min-width: 0;
 }
 
 .nav-link {
   color: #fff;
   text-decoration: none;
   font-weight: bold;
-  font-size: 25px;
+  font-size: clamp(14px, 1.3vw, 17px);
   cursor: pointer;
+  white-space: nowrap;
 
   &.active {
     color: #ffa500;
@@ -35,14 +37,15 @@ ion-header ion-toolbar {
   color: #fff;
   text-decoration: none;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 14px;
   border: 2px solid #fff;
   border-radius: 25px;
-  padding: 8px 20px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  white-space: nowrap;
 
   &:hover {
     color: #ffa500;
@@ -50,7 +53,7 @@ ion-header ion-toolbar {
   }
 
   ion-icon {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
@@ -92,4 +95,74 @@ ion-button {
   padding: 0 3px;
   line-height: 1;
   border: 1.5px solid #000;
+}
+
+/* ===== RESPONSIVE ===== */
+
+.acciones-movil {
+  display: none;
+}
+
+.btn-hamburguesa {
+  --color: #fff;
+  font-size: 26px;
+}
+
+.menu-movil {
+  display: none;
+  flex-direction: column;
+  background: #000;
+  border-top: 1px solid #333;
+  padding: 10px 20px 20px;
+}
+
+.nav-link-movil {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 14px 5px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+
+  &.active { color: #ffa500; }
+
+  ion-icon { font-size: 18px; }
+}
+
+.menu-movil-separador {
+  height: 1px;
+  background: #333;
+  margin: 10px 0;
+}
+
+@media (max-width: 900px) {
+  ion-header ion-toolbar {
+    --min-height: 70px;
+    padding: 0 12px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .acciones-escritorio {
+    display: none;
+  }
+
+  .acciones-movil {
+    display: flex;
+    align-items: center;
+  }
+
+  .menu-movil {
+    display: flex;
+  }
+
+  img[alt="Market Nocturno"] {
+    height: 42px !important;
+  }
 }

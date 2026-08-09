@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
@@ -8,6 +8,7 @@ import {
 import { addIcons } from 'ionicons';
 import { personOutline } from 'ionicons/icons';
 import { HeaderComponent } from '../shared/headers/public-header/header.component';
+import { HomeService, HomeSlide } from '../services/home';
 
 @Component({
   selector: 'app-home',
@@ -22,35 +23,55 @@ import { HeaderComponent } from '../shared/headers/public-header/header.componen
 })
 export class HomePage implements OnInit, OnDestroy {
 
-  originalImages = [
-    'elmejor.png',
-    'yoamomarket.png',
-    'mascaras.png',
-    'personas2.png',
-    'personas.png',
-    'pelicula.png',
-    'fachada.png'
-  ];
+  slidesOriginales: HomeSlide[] = [];
 
-  // Clonamos primeras y últimas para el loop infinito
-  carouselImages: string[] = [];
+  // Clonamos primero/último para el loop infinito
+  carouselImages: HomeSlide[] = [];
   currentSlide = 1;
   slideWidth = 285;
   isTransitioning = false;
   autoPlayInterval: any;
 
-  constructor() {
+  // Número de slides visibles según el ancho de pantalla.
+  // Debe coincidir con los breakpoints de home.page.scss (.carousel-slide min-width)
+  slidesToShow = 4;
+
+  constructor(private homeService: HomeService) {
     addIcons({ personOutline });
   }
 
+  @HostListener('window:resize')
+  onResize() {
+    this.updateSlidesToShow();
+  }
+
+  updateSlidesToShow() {
+    const width = window.innerWidth;
+    // Debe coincidir con @media (max-width: 768px) en home.page.scss
+    this.slidesToShow = width <= 768 ? 1 : 4;
+  }
+
   ngOnInit() {
-    // Agrega clon del último al inicio y clon del primero al final
-    this.carouselImages = [
-      this.originalImages[this.originalImages.length - 1],
-      ...this.originalImages,
-      this.originalImages[0]
-    ];
-    this.startAutoPlay();
+    this.updateSlidesToShow();
+
+    this.homeService.getSlides().subscribe({
+      next: (data) => {
+        this.slidesOriginales = data;
+
+        if (this.slidesOriginales.length > 0) {
+          this.carouselImages = [
+            this.slidesOriginales[this.slidesOriginales.length - 1],
+            ...this.slidesOriginales,
+            this.slidesOriginales[0]
+          ];
+          this.startAutoPlay();
+        }
+      },
+      error: () => {
+        this.slidesOriginales = [];
+        this.carouselImages = [];
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -70,10 +91,10 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   getTrackStyle() {
-  const slidePercent = 100 / 4; // 4 slides visibles
-  return {
-    transform: `translateX(-${this.currentSlide * slidePercent}%)`,
-    transition: this.isTransitioning ? 'none' : 'transform 0.5s ease-in-out'
+    const slidePercent = 100 / this.slidesToShow;
+    return {
+      transform: `translateX(-${this.currentSlide * slidePercent}%)`,
+      transition: this.isTransitioning ? 'none' : 'transform 0.5s ease-in-out'
     };
   }
 
@@ -84,7 +105,7 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.currentSlide === 0) {
       setTimeout(() => {
         this.isTransitioning = true;
-        this.currentSlide = this.originalImages.length;
+        this.currentSlide = this.slidesOriginales.length;
         setTimeout(() => this.isTransitioning = false, 50);
       }, 500);
     }

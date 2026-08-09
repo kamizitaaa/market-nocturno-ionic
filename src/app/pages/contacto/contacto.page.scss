@@ -294,3 +294,71 @@ footer {
     }
   }
 }
+
+// =========================================================
+// RESPONSIVE - TABLET / MÓVIL
+// =========================================================
+@media (max-width: 900px) {
+  .hero {
+    height: 160px;
+
+    .hero-content h1 {
+      font-size: 30px;
+    }
+  }
+
+  .contacto-section {
+    padding: 40px 20px;
+  }
+
+  .contacto-grid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .info-card {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .mapa iframe {
+    height: 200px;
+  }
+
+  footer {
+    padding: 25px 20px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 25px;
+  }
+
+  .footer-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero .hero-content h1 {
+    font-size: 24px;
+  }
+
+  .formulario-box h2,
+  .info-box h2 {
+    font-size: 20px;
+  }
+
+  .info-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+}

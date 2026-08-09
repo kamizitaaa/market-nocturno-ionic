@@ -70,6 +70,10 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'olvide-contrasena',
+    loadComponent: () => import('./pages/olvide-contrasena/olvide-contrasena.page').then( m => m.OlvideContrasenaPage)
+  },
+  {
     path: 'admin',
     canActivate: [authGuard, roleGuard],
     children: [
@@ -96,6 +100,10 @@ export const routes: Routes = [
       {
       path: 'sesiones',
       loadComponent: () => import('./pages/admin/sesiones/sesiones.page').then( m => m.SesionesPage)
+      },
+      {
+        path: 'home-slides',
+        loadComponent: () => import('./pages/admin/home-slides/home-slides.page').then( m => m.HomeSlidesPage)
       },
     ]
   },

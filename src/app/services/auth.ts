@@ -77,4 +77,17 @@ async getNombre(): Promise<string | null> {
   const { value } = await Preferences.get({ key: 'nombre' });
   return value;
 }
+
+olvideContrasena(email: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/olvide-contrasena`, { email });
+}
+
+restablecerContrasena(userId: number, codigo: string, password: string, passwordConfirmation: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/restablecer-contrasena`, {
+    user_id: userId,
+    codigo,
+    password,
+    password_confirmation: passwordConfirmation
+  });
+}
 }

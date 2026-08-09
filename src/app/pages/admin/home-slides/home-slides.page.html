@@ -1,0 +1,85 @@
+<app-admin-header></app-admin-header>
+
+<ion-content [fullscreen]="true">
+  <div class="admin-container">
+
+    <!-- Header -->
+    <div class="admin-header">
+      <h1>✨ IMÁGENES DEL HOME ✨</h1>
+      <p>Administra el carrusel de imágenes que se muestra en la página de inicio</p>
+    </div>
+
+    <div class="acciones-top">
+      <button class="btn-nuevo" (click)="abrirModal()">+ Nueva Imagen</button>
+      <button class="btn-recargar" (click)="recargar()">
+        <ion-icon name="refresh-outline" [class.spin]="cargandoRecarga"></ion-icon>
+        Recargar
+      </button>
+    </div>
+
+    <!-- Grid de slides -->
+    <div class="slides-grid">
+      <div class="slide-card" *ngFor="let slide of slides">
+        <div class="slide-imagen">
+          <img [src]="slide.imagen" [alt]="slide.titulo">
+          <span class="badge-estado" [class.activo]="slide.activo" [class.inactivo]="!slide.activo">
+            {{ slide.activo ? 'Visible' : 'Oculta' }}
+          </span>
+        </div>
+
+        <div class="slide-body">
+          <p class="slide-titulo">{{ slide.titulo || 'Sin título' }}</p>
+        </div>
+
+        <div class="slide-footer">
+          <label class="switch-label">
+            <input type="checkbox" [checked]="slide.activo" (change)="toggleActivo(slide)">
+            <span>{{ slide.activo ? 'En el carrusel' : 'Oculta' }}</span>
+          </label>
+
+          <button class="btn-eliminar" (click)="eliminarSlide(slide)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="sin-datos-full" *ngIf="slides.length === 0">
+        No hay imágenes en el carrusel todavía
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Nueva Imagen -->
+  <div class="modal-overlay" *ngIf="modalAbierto" (click)="cerrarModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Nueva Imagen del Carrusel</h2>
+        <button class="btn-cerrar" (click)="cerrarModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Imagen</label>
+          <input type="file" accept="image/*" (change)="onArchivoSeleccionado($event)">
+        </div>
+
+        <div class="form-group">
+          <label>Título (opcional)</label>
+          <input type="text" [(ngModel)]="tituloNuevo" placeholder="Ej. Te esperamos este viernes">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-guardar" (click)="agregarSlide()" [disabled]="guardando">
+          <ion-icon name="save-outline"></ion-icon>
+          {{ guardando ? 'Guardando...' : 'Agregar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

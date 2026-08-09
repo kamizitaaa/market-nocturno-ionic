@@ -34,6 +34,7 @@ export class ContactoPage implements OnInit {
 
   textoBusqueda = '';
   cargando = false;
+  cargandoRecarga = false;
 
   solicitudes: SolicitudContacto[] = [];
 
@@ -54,6 +55,8 @@ export class ContactoPage implements OnInit {
 
   cargarSolicitudes() {
     this.cargando = true;
+    this.cargandoRecarga = true;
+
     this.contactoService.getAllAdmin().subscribe({
       next: (mensajes: ContactoMensaje[]) => {
         this.solicitudes = mensajes.map(m => ({
@@ -65,10 +68,12 @@ export class ContactoPage implements OnInit {
           fecha: m.created_at
         }));
         this.cargando = false;
+        setTimeout(() => this.cargandoRecarga = false, 400);
       },
       error: (err) => {
         console.error('Error al cargar solicitudes de contacto:', err);
         this.cargando = false;
+        setTimeout(() => this.cargandoRecarga = false, 400);
       }
     });
   }

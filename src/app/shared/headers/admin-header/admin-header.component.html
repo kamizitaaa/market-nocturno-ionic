@@ -3,15 +3,18 @@
     <ion-buttons slot="start">
       <img src="assets/LogoMercadoNoctuno.png" height="60" alt="Market Nocturno" routerLink="/admin/dashboard" style="cursor:pointer">
     </ion-buttons>
+
     <div class="nav-links">
       <a routerLink="/admin/dashboard" class="nav-link" [class.active]="isActive('/admin/dashboard')">DASHBOARD</a>
+      <a routerLink="/admin/home-slides" class="nav-link" [class.active]="isActive('/admin/home-slides')">INICIO</a>
       <a routerLink="/admin/emprendimientos" class="nav-link" [class.active]="isActive('/admin/emprendimientos')">EMPRENDIMIENTOS</a>
       <a routerLink="/admin/acerca" class="nav-link" [class.active]="isActive('/admin/acerca')">ACERCA DE NOSOTROS</a>
       <a routerLink="/admin/contacto" class="nav-link" [class.active]="isActive('/admin/contacto')">CONTÁCTANOS</a>
       <a routerLink="/admin/convocatorias" class="nav-link" [class.active]="isActive('/admin/convocatorias')">CONVOCATORIAS</a>
       <a *ngIf="rolActual === 'superadmin'" routerLink="/admin/sesiones" class="nav-link" [class.active]="isActive('/admin/sesiones')">SESIONES</a>
     </div>
-    <ion-buttons slot="end">
+
+    <ion-buttons slot="end" class="acciones-escritorio">
       <ion-button routerLink="/admin/perfil">
         <ion-icon name="person-circle-outline" slot="start"></ion-icon>
         {{ nombreAdmin }}
@@ -21,5 +24,34 @@
         SALIR
       </a>
     </ion-buttons>
+
+    <!-- Botón hamburguesa: solo visible en móvil -->
+    <ion-buttons slot="end" class="acciones-movil">
+      <ion-button (click)="toggleMenuMovil()" class="btn-hamburguesa">
+        <ion-icon [name]="menuMovilAbierto ? 'close-outline' : 'menu-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
+
+  <!-- Menú desplegable móvil -->
+  <div class="menu-movil" *ngIf="menuMovilAbierto">
+    <a routerLink="/admin/dashboard" class="nav-link-movil" [class.active]="isActive('/admin/dashboard')">DASHBOARD</a>
+    <a routerLink="/admin/home-slides" class="nav-link-movil" [class.active]="isActive('/admin/home-slides')">INICIO</a>
+    <a routerLink="/admin/emprendimientos" class="nav-link-movil" [class.active]="isActive('/admin/emprendimientos')">EMPRENDIMIENTOS</a>
+    <a routerLink="/admin/acerca" class="nav-link-movil" [class.active]="isActive('/admin/acerca')">ACERCA DE NOSOTROS</a>
+    <a routerLink="/admin/contacto" class="nav-link-movil" [class.active]="isActive('/admin/contacto')">CONTÁCTANOS</a>
+    <a routerLink="/admin/convocatorias" class="nav-link-movil" [class.active]="isActive('/admin/convocatorias')">CONVOCATORIAS</a>
+    <a *ngIf="rolActual === 'superadmin'" routerLink="/admin/sesiones" class="nav-link-movil" [class.active]="isActive('/admin/sesiones')">SESIONES</a>
+
+    <div class="menu-movil-separador"></div>
+
+    <a routerLink="/admin/perfil" class="nav-link-movil">
+      <ion-icon name="person-circle-outline"></ion-icon>
+      {{ nombreAdmin }}
+    </a>
+    <a (click)="logout()" class="nav-link-movil">
+      <ion-icon name="log-out-outline"></ion-icon>
+      SALIR
+    </a>
+  </div>
 </ion-header>

@@ -4,11 +4,14 @@
   <div class="emprendimientos-container">
 
     <!-- Sidebar filtros -->
-    <div class="sidebar">
-      <div class="sidebar-header">
+    <div class="sidebar" [class.abierta]="filtrosMovilAbierto">
+      <div class="sidebar-header" (click)="toggleFiltrosMovil()">
         <ion-icon name="menu-outline"></ion-icon>
         <span>Filtros</span>
+        <ion-icon class="chevron-movil" [name]="filtrosMovilAbierto ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
       </div>
+
+      <div class="sidebar-body">
 
       <!-- Categoría -->
       <div class="filtro-section">
@@ -56,6 +59,8 @@
       </div>
 
       <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar filtros</button>
+
+      </div>
     </div>
 
     <!-- Contenido principal -->

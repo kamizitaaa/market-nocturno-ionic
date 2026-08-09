@@ -33,6 +33,9 @@ export class EmprendimientosPage implements OnInit {
   filtroPrecio = '';
   cargando = false;
 
+  // Controla si el panel de filtros está abierto en vista móvil (hamburguesa)
+  filtrosMovilAbierto = false;
+
   filtros = {
     categoria: true,
     estado: true,
@@ -86,6 +89,10 @@ export class EmprendimientosPage implements OnInit {
 
   toggleFiltro(filtro: string) {
     this.filtros[filtro as keyof typeof this.filtros] = !this.filtros[filtro as keyof typeof this.filtros];
+  }
+
+  toggleFiltrosMovil() {
+    this.filtrosMovilAbierto = !this.filtrosMovilAbierto;
   }
 
   aplicarFiltros() {

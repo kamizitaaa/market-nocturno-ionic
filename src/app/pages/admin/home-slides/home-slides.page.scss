@@ -29,7 +29,9 @@ ion-content {
 }
 
 .acciones-top {
-  margin-bottom: 15px;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
 }
 
 .btn-nuevo {
@@ -46,70 +48,6 @@ ion-content {
   &:hover { background: #ff6b00; }
 }
 
-.busqueda-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.busqueda-input {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 25px;
-  padding: 10px 15px;
-  gap: 10px;
-
-  ion-icon { color: #aaa; font-size: 18px; }
-
-  .busqueda-field {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    font-size: 14px;
-
-    &::placeholder { color: #555; }
-  }
-}
-
-.filtro-select {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 25px;
-  color: #fff;
-  padding: 10px 15px;
-  font-size: 13px;
-  outline: none;
-  cursor: pointer;
-
-  &:focus { border-color: #ffa500; }
-}
-
-.tabla-section {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 15px;
-  padding: 20px;
-}
-
-.tabla-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-
-  h2 {
-    font-size: 16px;
-    font-weight: bold;
-    color: #ffa500;
-  }
-}
-
 .btn-recargar {
   display: flex;
   align-items: center;
@@ -118,118 +56,134 @@ ion-content {
   border: 1px solid #555;
   border-radius: 20px;
   color: #aaa;
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 10px 16px;
+  font-size: 13px;
   cursor: pointer;
-  transition: all 0.3s;
 
   ion-icon { font-size: 14px; }
 
-  &:hover {
-    border-color: #ffa500;
-    color: #ffa500;
-  }
+  &:hover { border-color: #ffa500; color: #ffa500; }
 }
 
-.tabla-container { overflow-x: auto; }
+.slides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
 
-table {
+.slide-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s;
+
+  &:hover { border-color: #ffa500; }
+}
+
+.slide-imagen {
+  position: relative;
   width: 100%;
-  border-collapse: collapse;
+  height: 160px;
 
-  thead tr {
-    background: #000;
-    border-bottom: 2px solid #ffa500;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
-
-  th {
-    padding: 10px 12px;
-    text-align: left;
-    color: #ffa500;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 1px;
-  }
-
-  td {
-    padding: 10px 12px;
-    color: #ccc;
-    font-size: 13px;
-    border-bottom: 1px solid #222;
-  }
-
-  tr:hover td { background: #222; }
 }
 
-.badge {
-  padding: 3px 10px;
+.badge-estado {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   font-size: 11px;
   font-weight: bold;
 
-  &.activo {
-    background: rgba(0, 255, 0, 0.15);
-    color: #00ff00;
-    border: 1px solid #00ff00;
-  }
+  &.activo { background: rgba(0, 255, 0, 0.85); color: #000; }
+  &.inactivo { background: rgba(150, 150, 150, 0.85); color: #000; }
+}
 
-  &.destacado {
-    background: rgba(255, 165, 0, 0.15);
-    color: #ffa500;
-    border: 1px solid #ffa500;
-  }
+.slide-body {
+  padding: 12px 16px;
 
-  &.inactivo {
-    background: rgba(255, 0, 0, 0.15);
-    color: #ff4444;
-    border: 1px solid #ff4444;
+  .slide-titulo {
+    color: #ccc;
+    font-size: 13px;
+    margin: 0;
   }
 }
 
-.acciones {
+.slide-footer {
   display: flex;
-  gap: 6px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-top: 1px solid #333;
+}
 
-  button {
-    padding: 5px 8px;
-    border-radius: 8px;
-    border: none;
+.switch-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #aaa;
+
+  input[type="checkbox"] {
+    width: 32px;
+    height: 18px;
+    appearance: none;
+    background: #333;
+    border-radius: 20px;
+    position: relative;
     cursor: pointer;
-    font-size: 14px;
     transition: all 0.3s;
-  }
 
-  .btn-editar {
-    background: rgba(255, 165, 0, 0.15);
-    color: #ffa500;
-    border: 1px solid #ffa500;
+    &:checked { background: #00ff00; }
 
-    &:hover { background: #ffa500; color: #000; }
-  }
+    &::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
 
-  .btn-eliminar {
-    background: rgba(255, 0, 0, 0.15);
-    color: #ff4444;
-    border: 1px solid #ff4444;
-
-    &:hover { background: #ff4444; color: #fff; }
+    &:checked::before { transform: translateX(14px); }
   }
 }
 
-.sin-datos {
+.btn-eliminar {
+  background: rgba(255, 0, 0, 0.15);
+  color: #ff4444;
+  border: 1px solid #ff4444;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+
+  &:hover { background: #ff4444; color: #fff; }
+}
+
+.sin-datos-full {
+  grid-column: 1 / -1;
   text-align: center;
-  color: #555;
-  padding: 20px;
+  color: #666;
+  padding: 40px;
   font-style: italic;
 }
 
-/* ===== MODAL ===== */
+/* Modal */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
@@ -242,9 +196,7 @@ table {
   border: 2px solid #ffa500;
   border-radius: 20px;
   width: 90%;
-  max-width: 550px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-width: 450px;
 }
 
 .modal-header {
@@ -254,11 +206,7 @@ table {
   padding: 20px 25px;
   border-bottom: 1px solid #333;
 
-  h2 {
-    color: #ffa500;
-    font-size: 20px;
-    font-weight: bold;
-  }
+  h2 { color: #ffa500; font-size: 18px; font-weight: bold; }
 }
 
 .btn-cerrar {
@@ -267,7 +215,6 @@ table {
   color: #aaa;
   font-size: 22px;
   cursor: pointer;
-  display: flex;
 
   &:hover { color: #ff1493; }
 }
@@ -279,25 +226,14 @@ table {
   gap: 15px;
 }
 
-.form-row {
-  display: flex;
-  gap: 15px;
-
-  .form-group { flex: 1; }
-}
-
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 
-  label {
-    color: #aaa;
-    font-size: 13px;
-    font-weight: bold;
-  }
+  label { color: #aaa; font-size: 13px; font-weight: bold; }
 
-  input, select, textarea {
+  input {
     background: #1a1a1a;
     border: 1px solid #333;
     border-radius: 10px;
@@ -305,14 +241,10 @@ table {
     padding: 10px 12px;
     font-size: 14px;
     outline: none;
-    font-family: inherit;
 
     &:focus { border-color: #ffa500; }
-
     &::placeholder { color: #555; }
   }
-
-  textarea { resize: vertical; }
 }
 
 .modal-footer {
@@ -347,30 +279,8 @@ table {
   font-weight: bold;
   cursor: pointer;
 
-  ion-icon { font-size: 16px; }
-
   &:hover { background: #ff6b00; }
-}
-
-.icono-destacado {
-  color: #555;
-  cursor: pointer;
-  font-size: 16px;
-  margin-right: 6px;
-  vertical-align: middle;
-  transition: all 0.2s;
-
-  &.activa {
-    color: #ffd700;
-  }
-
-  &:hover {
-    transform: scale(1.2);
-  }
-}
-
-.fila-destacada {
-  background: rgba(255, 165, 0, 0.06);
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
 
 .spin {
@@ -397,28 +307,10 @@ table {
     p { font-size: 13px; }
   }
 
-  .busqueda-row {
+  .acciones-top {
     flex-wrap: wrap;
-  }
 
-  .busqueda-input {
-    flex: 1 1 100%;
-  }
-
-  .filtro-select {
-    flex: 1;
-  }
-
-  .tabla-header {
-    flex-wrap: wrap;
-    gap: 10px;
-
-    h2 { font-size: 15px; }
-  }
-
-  .form-row {
-    flex-direction: column;
-    gap: 15px;
+    button { flex: 1 1 auto; justify-content: center; }
   }
 
   .modal-card {
@@ -430,15 +322,18 @@ table {
 // RESPONSIVE - MÓVIL (≤600px)
 // =========================================================
 @media (max-width: 600px) {
-  .filtro-select {
-    flex: 1 1 100%;
+  .slides-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
-  table {
-    th, td {
-      padding: 8px 8px;
-      font-size: 12px;
-    }
+  .slide-imagen {
+    height: 110px;
+  }
+
+  .slide-footer {
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .modal-header, .modal-body, .modal-footer {
@@ -450,5 +345,11 @@ table {
     flex-direction: column-reverse;
 
     button { width: 100%; justify-content: center; }
+  }
+}
+
+@media (max-width: 380px) {
+  .slides-grid {
+    grid-template-columns: 1fr;
   }
 }

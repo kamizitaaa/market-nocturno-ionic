@@ -9,7 +9,7 @@ ion-header ion-toolbar {
 
 .nav-links {
   display: flex;
-  gap: 45px;
+  gap: clamp(14px, 2vw, 28px);
   align-items: center;
   flex: 1;
   justify-content: center;
@@ -19,7 +19,7 @@ ion-header ion-toolbar {
   color: #fff;
   text-decoration: none;
   font-weight: bold;
-  font-size: 22px;
+  font-size: clamp(14px, 1.3vw, 15px);
   cursor: pointer;
 
   &.active {
@@ -57,4 +57,71 @@ ion-header ion-toolbar {
 ion-button {
   --color: #fff;
   font-weight: bold;
+}
+
+// ===== Botón hamburguesa =====
+.btn-hamburguesa {
+  font-size: 28px;
+  --color: #fff;
+}
+
+// ===== Por defecto (escritorio): ocultar hamburguesa y menú móvil =====
+.acciones-movil {
+  display: none;
+}
+
+.menu-movil {
+  display: none;
+}
+
+// ===== Menú desplegable móvil =====
+.menu-movil {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #000;
+  border-bottom: 8px solid #ff1493;
+  flex-direction: column;
+  padding: 10px 0;
+  z-index: 999;
+}
+
+.nav-link-movil {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &.active {
+    color: #ffa500;
+  }
+}
+
+.menu-movil-separador {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 8px 20px;
+}
+
+// ===== Breakpoint móvil =====
+@media (max-width: 992px) {
+  .nav-links {
+    display: none;
+  }
+
+  .acciones-escritorio {
+    display: none;
+  }
+
+  .acciones-movil {
+    display: flex;
+  }
+
+  .menu-movil[class] {
+    display: flex;
+  }
 }
