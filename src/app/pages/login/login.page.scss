@@ -39,6 +39,35 @@ ion-content {
   text-align: left;
 }
 
+.field-label {
+  display: block;
+  color: #ccc;
+  font-size: 13px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.required-mark {
+  color: #ff4d4d;
+}
+
+.error-msg {
+  color: #ff4d4d;
+  font-size: 12px;
+  margin: 6px 2px 0;
+}
+
+.hint-text {
+  color: #777;
+  font-size: 12px;
+  margin: 6px 2px 0;
+}
+
+.input-error {
+  border-color: #ff4d4d !important;
+  box-shadow: 0 0 0 1px rgba(255, 77, 77, 0.4);
+}
+
 .input-icon {
   display: flex;
   align-items: center;

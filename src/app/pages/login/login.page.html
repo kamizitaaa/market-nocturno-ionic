@@ -8,41 +8,47 @@
       <p class="subtitle">Ingresa tus credenciales para continuar</p>
 
       <div class="form-group">
-        <div class="input-icon">
+        <label class="field-label">Correo electrónico <span class="required-mark">*</span></label>
+        <div class="input-icon" [class.input-error]="errores.email">
           <ion-icon name="mail-outline"></ion-icon>
-          <input type="email" [(ngModel)]="email" placeholder="correo@ejemplo.com" class="custom-input">
+          <input type="email" [(ngModel)]="email" (ngModelChange)="onEmailChange()" placeholder="correo@ejemplo.com" class="custom-input">
         </div>
+        <p class="error-msg" *ngIf="errores.email">{{ errores.email }}</p>
       </div>
 
       <div class="form-group">
-        <div class="input-icon">
+        <label class="field-label">Contraseña <span class="required-mark">*</span></label>
+        <div class="input-icon" [class.input-error]="errores.password">
           <ion-icon name="lock-closed-outline"></ion-icon>
-          <input [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="••••••••" class="custom-input">
+          <input [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" (ngModelChange)="onPasswordChange()" placeholder="••••••••" class="custom-input">
           <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'" (click)="togglePassword()" class="eye-icon"></ion-icon>
         </div>
+        <p class="error-msg" *ngIf="errores.password">{{ errores.password }}</p>
+        <p class="hint-text" *ngIf="!errores.password">Mínimo 8 caracteres</p>
       </div>
 
       <!-- Captcha real, viene del backend -->
       <div class="form-group captcha-group">
-        <div class="captcha-box" (click)="toggleCaptchaVista()">
+        <div class="captcha-box" [class.input-error]="errores.captcha" (click)="toggleCaptchaVista()">
           <ion-icon name="shield-checkmark-outline"></ion-icon>
-          <span>Verificación humana *</span>
+          <span>Verificación humana <span class="required-mark">*</span></span>
           <ion-icon [name]="mostrarCaptcha ? 'chevron-up-outline' : 'chevron-down-outline'" class="ml-auto"></ion-icon>
         </div>
 
-        <div class="captcha-fila" *ngIf="mostrarCaptcha">
+        <div class="captcha-fila" *ngIf="mostrarCaptcha" [class.input-error]="errores.captcha">
           <ng-container *ngIf="!cargandoCaptcha; else cargando">
             <span class="num">{{ captchaNum1 }}</span>
             <span class="operador">x</span>
             <span class="num">{{ captchaNum2 }}</span>
             <span class="operador">=</span>
-            <input type="text" [(ngModel)]="captchaRespuesta" placeholder="Tu respuesta" class="captcha-input">
+            <input type="text" [(ngModel)]="captchaRespuesta" (ngModelChange)="onCaptchaChange()" placeholder="Tu respuesta" class="captcha-input">
           </ng-container>
           <ng-template #cargando>
             <span class="cargando-texto">Cargando verificación...</span>
           </ng-template>
           <ion-icon name="refresh-outline" (click)="cargarCaptcha()" class="refresh-icon"></ion-icon>
         </div>
+        <p class="error-msg" *ngIf="errores.captcha">{{ errores.captcha }}</p>
       </div>
 
       <div class="form-options">

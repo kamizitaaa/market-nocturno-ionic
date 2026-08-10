@@ -39,6 +39,13 @@ export class LoginPage implements OnInit {
 
   cargando = false;
 
+  // Mensajes de error por campo
+  errores = {
+    email: '',
+    password: '',
+    captcha: ''
+  };
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -78,14 +85,50 @@ export class LoginPage implements OnInit {
     this.mostrarCaptcha = !this.mostrarCaptcha;
   }
 
-  login() {
-    if (!this.email || !this.password) {
-      alert('Por favor ingresa tu correo y contraseña');
-      return;
+  onEmailChange() {
+    this.errores.email = '';
+  }
+
+  onPasswordChange() {
+    this.errores.password = '';
+  }
+
+  onCaptchaChange() {
+    this.errores.captcha = '';
+  }
+
+  validarCampos(): boolean {
+    this.errores = { email: '', password: '', captcha: '' };
+    let valido = true;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!this.email?.trim()) {
+      this.errores.email = 'El correo es obligatorio';
+      valido = false;
+    } else if (!emailRegex.test(this.email.trim())) {
+      this.errores.email = 'Ingresa un correo válido';
+      valido = false;
     }
 
-    if (!this.captchaRespuesta) {
-      alert('Por favor completa la verificación humana');
+    if (!this.password?.trim()) {
+      this.errores.password = 'La contraseña es obligatoria';
+      valido = false;
+    } else if (this.password.length < 8) {
+      this.errores.password = 'La contraseña debe tener mínimo 8 caracteres';
+      valido = false;
+    }
+
+    if (!this.captchaRespuesta?.trim()) {
+      this.errores.captcha = 'Completa la verificación humana';
+      valido = false;
+    }
+
+    return valido;
+  }
+
+  login() {
+    if (!this.validarCampos()) {
       return;
     }
 
